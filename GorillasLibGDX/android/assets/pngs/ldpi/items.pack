@@ -1,0 +1,96 @@
+
+items.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+explosion_1
+  rotate: false
+  xy: 0, 20
+  size: 84, 44
+  orig: 84, 44
+  offset: 0, 0
+  index: 1
+explosion_2
+  rotate: false
+  xy: 84, 20
+  size: 84, 44
+  orig: 84, 44
+  offset: 0, 0
+  index: 2
+sound_off
+  rotate: false
+  xy: 168, 34
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+sound_on
+  rotate: false
+  xy: 198, 34
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+sun_astonished
+  rotate: false
+  xy: 0, 0
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+sun_smiling
+  rotate: false
+  xy: 20, 0
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+gorilla
+  rotate: false
+  xy: 40, 0
+  size: 19, 20
+  orig: 19, 20
+  offset: 0, 0
+  index: -1
+gorilla_destructed
+  rotate: false
+  xy: 59, 0
+  size: 19, 20
+  orig: 19, 20
+  offset: 0, 0
+  index: -1
+gorilla_left_arm_up
+  rotate: false
+  xy: 78, 0
+  size: 19, 20
+  orig: 19, 20
+  offset: 0, 0
+  index: -1
+gorilla_right_arm_up
+  rotate: false
+  xy: 97, 0
+  size: 19, 20
+  orig: 19, 20
+  offset: 0, 0
+  index: -1
+german_flag
+  rotate: false
+  xy: 116, 5
+  size: 30, 15
+  orig: 30, 15
+  offset: 0, 0
+  index: -1
+union_jack
+  rotate: false
+  xy: 168, 19
+  size: 30, 15
+  orig: 30, 15
+  offset: 0, 0
+  index: -1
+banana
+  rotate: false
+  xy: 228, 54
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
