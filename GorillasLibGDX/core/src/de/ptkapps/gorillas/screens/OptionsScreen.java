@@ -77,7 +77,7 @@ public class OptionsScreen extends GorillasScreen {
 				soundButton.setStyle(soundButtonStyle);
 			}
 		});
-		stage.addActor(soundButton);
+		guiStage.addActor(soundButton);
 		
 		mainMenuButton = new TextButton("", skin);
 		mainMenuButton.addListener(new ChangeListener() {
@@ -101,7 +101,7 @@ public class OptionsScreen extends GorillasScreen {
 				updateGameTextElements();
 			}
 		});
-		stage.addActor(englishButton);
+		guiStage.addActor(englishButton);
 
 		ButtonStyle germanButtonStyle = new ButtonStyle();
 		germanButtonStyle.up = new TextureRegionDrawable(Assets.germanFlag);
@@ -115,7 +115,7 @@ public class OptionsScreen extends GorillasScreen {
 				updateGameTextElements();
 			}
 		});
-		stage.addActor(germanButton);
+		guiStage.addActor(germanButton);
 
 		gravityLabel = new Label("", skin);
 		gravityLabel.setColor(Color.BLACK);
@@ -162,7 +162,7 @@ public class OptionsScreen extends GorillasScreen {
 		table.add(deathlyLabel).padTop(5);
 		table.add(deathly).padTop(5).padRight(2);
 
-		stage.addActor(table);
+		guiStage.addActor(table);
 
 		updateTextElements();
 	}
@@ -181,7 +181,7 @@ public class OptionsScreen extends GorillasScreen {
 		// ChangeListeners or individual InputListeners failed, cause they
 		// always
 		// trigger each other.
-		stage.addListener(new InputListener() {
+		guiStage.addListener(new InputListener() {
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,

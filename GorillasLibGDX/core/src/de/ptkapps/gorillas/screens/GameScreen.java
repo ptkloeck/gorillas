@@ -20,626 +20,612 @@ import de.ptkapps.gorillas.world.WorldRenderer;
 
 public class GameScreen extends GorillasScreen {
 
-	// private FPSLogger fpsLogger;
+    // private FPSLogger fpsLogger;
 
-	private World world;
-	private WorldRenderer worldRenderer;
+    private World world;
+    private WorldRenderer worldRenderer;
 
-	private GameGUI gameGUI;
+    private GameGUI gameGUI;
 
-	private AI ai;
+    private AI ai;
 
-	private Mocker mocker;
+    private Mocker mocker;
 
-	// --- some timing variables and constants ---
+    // --- some timing variables and constants ---
 
-	/**
-	 * the time passed since the start of the current level
-	 */
-	private float levelPlayTime;
+    /**
+     * the time passed since the start of the current level
+     */
+    private float levelPlayTime;
 
-	private static final float AI_LEVEL_THINK_TIME = 1.0f;
+    private static final float AI_LEVEL_THINK_TIME = 1.0f;
 
-	/**
-	 * the time passed since the banana left the screen or the time passed since
-	 * the shot hit the city
-	 */
-	private float timeShotTerminated;
+    /**
+     * the time passed since the banana left the screen or the time passed since the shot hit the
+     * city
+     */
+    private float timeShotTerminated;
 
-	private static final float MESSAGE_SHOW_TIME = 2.4f;
+    private static final float MESSAGE_SHOW_TIME = 2.4f;
 
-	// --- the game types (match against computer, or 1 on 1 match) ---
+    // --- the game types (match against computer, or 1 on 1 match) ---
 
-	private static final int GAME_TYPE_AI = 0;
-	private static final int GAME_TYPE_1_ON_1 = 1;
+    private static final int GAME_TYPE_AI = 0;
+    private static final int GAME_TYPE_1_ON_1 = 1;
 
-	private int gameType;
+    private int gameType;
 
-	// --- the game states ---
+    // --- the game states ---
 
-	private static final int GAME_PARAMETER_INPUT = 0;
-	private static final int GAME_BANANA_FLYING = 1;
-	private static final int GAME_CITY_DESTRUCTION = 2;
-	private static final int GAME_GORILLA_1_HIT = 3;
-	private static final int GAME_GORILLA_2_HIT = 4;
-	private static final int GAME_LEFT_SCREEN = 5;
-	private static final int GAME_PAUSED = 6;
+    private static final int GAME_PARAMETER_INPUT = 0;
+    private static final int GAME_BANANA_FLYING = 1;
+    private static final int GAME_CITY_DESTRUCTION = 2;
+    private static final int GAME_GORILLA_1_HIT = 3;
+    private static final int GAME_GORILLA_2_HIT = 4;
+    private static final int GAME_LEFT_SCREEN = 5;
+    private static final int GAME_PAUSED = 6;
 
-	private int state;
+    private int state;
 
-	/**
-	 * the state in which pause was pressed has to be remembered to be able to
-	 * resume the game
-	 */
-	private int stateBeforePaused;
+    /**
+     * the state in which pause was pressed has to be remembered to be able to resume the game
+     */
+    private int stateBeforePaused;
 
-	// --- Whose turn is it? (player 1 always on the left, player 2 on the
-	// right) ---
+    // --- Whose turn is it? (player 1 always on the left, player 2 on the
+    // right) ---
 
-	public static final int TURN_PLAYER_1 = 1;
-	public static final int TURN_PLAYER_2 = 2;
+    public static final int TURN_PLAYER_1 = 1;
+    public static final int TURN_PLAYER_2 = 2;
 
-	private int whoseTurn;
+    private int whoseTurn;
 
-	// --- Control types ---
+    // --- Control types ---
 
-	public enum ControlType {
-		CLASSIC, MODERN
-	}
+    public enum ControlType {
+        CLASSIC, MODERN
+    }
 
-	private ControlType controlPlayer1;
-	private ControlType controlPlayer2;
+    private ControlType controlPlayer1;
+    private ControlType controlPlayer2;
 
-	public ControlType getControlPlayer1() {
-		return controlPlayer1;
-	}
+    public ControlType getControlPlayer1() {
+        return controlPlayer1;
+    }
 
-	public GameScreen(Gorillas game) {
+    public GameScreen(Gorillas game) {
 
-		super(game);
+        super(game);
 
-		addModernControlListener();
+        addModernControlListener();
 
-		// fpsLogger = new FPSLogger();
+        // fpsLogger = new FPSLogger();
 
-		world = new World();
-		worldRenderer = new WorldRenderer(game.batch, world);
+        world = new World(game.guiWidth, game.guiHeight);
+        worldRenderer = new WorldRenderer(game.batch, world);
 
-		ai = new AI(world, Options.getInstance().getDifficulty());
+        ai = new AI(world, Options.getInstance().getDifficulty());
 
-		gameGUI = new GameGUI(this, stage, game.skin);
+        gameGUI = new GameGUI(this, guiStage, game.skin);
 
-		mocker = new Mocker(gameGUI);
+        mocker = new Mocker(gameGUI);
 
-		updateTextElements();
-	}
+        updateTextElements();
+    }
 
-	public void setPlayerNames(String namePlayer1, String namePlayer2) {
+    public void setPlayerNames(String namePlayer1, String namePlayer2) {
 
-		world.namePlayer1 = namePlayer1;
-		world.namePlayer2 = namePlayer2;
-		gameGUI.setPlayerNames(namePlayer1, namePlayer2);
-	}
+        world.namePlayer1 = namePlayer1;
+        world.namePlayer2 = namePlayer2;
+        gameGUI.setPlayerNames(namePlayer1, namePlayer2);
+    }
 
-	public void setAIGame() {
-		gameType = GAME_TYPE_AI;
-		controlPlayer2 = ControlType.CLASSIC;
-	}
+    public void setAIGame() {
+        gameType = GAME_TYPE_AI;
+        controlPlayer2 = ControlType.CLASSIC;
+    }
 
-	public void set1on1Game() {
-		gameType = GAME_TYPE_1_ON_1;
-	}
+    public void set1on1Game() {
+        gameType = GAME_TYPE_1_ON_1;
+    }
 
-	public void setPlayer1Control(ControlType control) {
-		controlPlayer1 = control;
-	}
+    public void setPlayer1Control(ControlType control) {
+        controlPlayer1 = control;
+    }
 
-	public void setPlayer2Control(ControlType control) {
-		controlPlayer2 = control;
-	}
+    public void setPlayer2Control(ControlType control) {
+        controlPlayer2 = control;
+    }
 
-	private void addModernControlListener() {
+    private void addModernControlListener() {
 
-		stage.addListener(new ClickListener() {
+        guiStage.addListener(new ClickListener() {
 
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
-				return handleTouchDown(x, y);
-			}
+                return handleTouchDown(x, y);
+            }
 
-			@Override
-			public void touchDragged(InputEvent event, float x, float y,
-					int pointer) {
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
 
-				handleTouchDragged(x, y);
-			}
+                handleTouchDragged(x, y);
+            }
 
-			@Override
-			public void touchUp(InputEvent event, float x, float y,
-					int pointer, int button) {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
-				handleTouchUp();
-			}
-		});
-	}
+                handleTouchUp();
+            }
+        });
+    }
 
-	private boolean handleTouchDown(float x, float y) {
+    private boolean handleTouchDown(float x, float y) {
 
-		if (state == GAME_PARAMETER_INPUT) {
+        if (state == GAME_PARAMETER_INPUT) {
 
-			boolean player1Turn = (whoseTurn == TURN_PLAYER_1);
-			boolean player1Modern = controlPlayer1.equals(ControlType.MODERN);
+            boolean player1Turn = (whoseTurn == TURN_PLAYER_1);
+            boolean player1Modern = controlPlayer1.equals(ControlType.MODERN);
 
-			boolean player2Turn = (whoseTurn == TURN_PLAYER_2);
-			boolean player2Modern = controlPlayer2.equals(ControlType.MODERN);
+            boolean player2Turn = (whoseTurn == TURN_PLAYER_2);
+            boolean player2Modern = controlPlayer2.equals(ControlType.MODERN);
 
-			if ((player1Turn && player1Modern) | (player2Turn && player2Modern)) {
+            if ((player1Turn && player1Modern) | (player2Turn && player2Modern)) {
 
-				if (player1Turn) {
-					gameGUI.hidePlayer1Turn();
-				} else {
-					gameGUI.hidePlayer2Turn();
-				}
+                if (player1Turn) {
+                    gameGUI.hidePlayer1Turn();
+                } else {
+                    gameGUI.hidePlayer2Turn();
+                }
 
-				Parameterization param = whoseTurn == TURN_PLAYER_1 ? world.paramPlayer1
-						: world.paramPlayer2;
+                Parameterization param = whoseTurn == TURN_PLAYER_1 ? world.paramPlayer1 : world.paramPlayer2;
 
-				param.setStartPos(new Vector2(x, y));
-				param.setEndPos(new Vector2(x, y));
+                param.setStartPos(new Vector2(x, y));
+                param.setEndPos(new Vector2(x, y));
 
-				return true;
-			}
-		}
-		return false;
-	}
+                return true;
+            }
+        }
+        return false;
+    }
 
-	private void handleTouchDragged(float x, float y) {
+    private void handleTouchDragged(float x, float y) {
 
-		if (state == GAME_PARAMETER_INPUT) {
+        if (state == GAME_PARAMETER_INPUT) {
 
-			boolean player1Turn = (whoseTurn == TURN_PLAYER_1);
-			boolean player1Modern = controlPlayer1.equals(ControlType.MODERN);
+            boolean player1Turn = (whoseTurn == TURN_PLAYER_1);
+            boolean player1Modern = controlPlayer1.equals(ControlType.MODERN);
 
-			boolean player2Turn = (whoseTurn == TURN_PLAYER_2);
-			boolean player2Modern = controlPlayer2.equals(ControlType.MODERN);
+            boolean player2Turn = (whoseTurn == TURN_PLAYER_2);
+            boolean player2Modern = controlPlayer2.equals(ControlType.MODERN);
 
-			if ((player1Turn && player1Modern) | (player2Turn && player2Modern)) {
+            if ((player1Turn && player1Modern) | (player2Turn && player2Modern)) {
 
-				Parameterization param = whoseTurn == TURN_PLAYER_1 ? world.paramPlayer1
-						: world.paramPlayer2;
-				param.setEndPos(new Vector2(x, y));
-			}
-		}
-	}
+                Parameterization param = whoseTurn == TURN_PLAYER_1 ? world.paramPlayer1 : world.paramPlayer2;
+                param.setEndPos(new Vector2(x, y));
+            }
+        }
+    }
 
-	private void handleTouchUp() {
+    private void handleTouchUp() {
 
-		Parameterization param = whoseTurn == TURN_PLAYER_1 ? world.paramPlayer1
-				: world.paramPlayer2;
-		if (param.minLengthReached()) {
-			param.setBeingAdjusted(false);
-			param.setShowOld(false);
-			generateShot(param.getAngle(), param.getVelocity());
-			param.saveToOldParameterization();
-		}
-	}
+        Parameterization param = whoseTurn == TURN_PLAYER_1 ? world.paramPlayer1 : world.paramPlayer2;
+        if (param.minLengthReached()) {
+            param.setBeingAdjusted(false);
+            param.setShowOld(false);
+            generateShot(param.getAngle(), param.getVelocity());
+            param.saveToOldParameterization();
+        }
+    }
 
-	private void update(float delta) {
+    private void update(float delta) {
 
-		if (state != GAME_PAUSED && state != GAME_BANANA_FLYING) {
-			world.update(delta);
-		}
+        if (state != GAME_PAUSED && state != GAME_BANANA_FLYING) {
+            world.update(delta);
+        }
 
-		levelPlayTime += delta;
+        levelPlayTime += delta;
 
-		switch (state) {
-		case GAME_PARAMETER_INPUT:
-			updateParameterInput(delta);
-			break;
+        switch (state) {
+        case GAME_PARAMETER_INPUT:
+            updateParameterInput(delta);
+            break;
 
-		case GAME_BANANA_FLYING:
-			updateBananaFlying(delta);
-			break;
+        case GAME_BANANA_FLYING:
+            updateBananaFlying(delta);
+            break;
 
-		case GAME_CITY_DESTRUCTION:
-			updateCityDestruction(delta);
-			break;
+        case GAME_CITY_DESTRUCTION:
+            updateCityDestruction(delta);
+            break;
 
-		case GAME_GORILLA_1_HIT:
-			updateGorilla1Hit();
-			break;
+        case GAME_GORILLA_1_HIT:
+            updateGorilla1Hit();
+            break;
 
-		case GAME_GORILLA_2_HIT:
-			updateGorilla2Hit();
-			break;
+        case GAME_GORILLA_2_HIT:
+            updateGorilla2Hit();
+            break;
 
-		case GAME_LEFT_SCREEN:
-			updateLeftScreen(delta);
-			break;
+        case GAME_LEFT_SCREEN:
+            updateLeftScreen(delta);
+            break;
 
-		case GAME_PAUSED:
-			updateGamePaused();
-			break;
-		}
-	}
+        case GAME_PAUSED:
+            updateGamePaused();
+            break;
+        }
+    }
 
-	private void updateParameterInput(float delta) {
+    private void updateParameterInput(float delta) {
 
-		boolean player1Turn = (whoseTurn == TURN_PLAYER_1);
-		boolean player1Modern = controlPlayer1.equals(ControlType.MODERN);
+        boolean player1Turn = (whoseTurn == TURN_PLAYER_1);
+        boolean player1Modern = controlPlayer1.equals(ControlType.MODERN);
 
-		boolean player2Turn = (whoseTurn == TURN_PLAYER_2);
-		boolean player2Modern = controlPlayer2.equals(ControlType.MODERN);
+        boolean player2Turn = (whoseTurn == TURN_PLAYER_2);
+        boolean player2Modern = controlPlayer2.equals(ControlType.MODERN);
 
-		if (player1Turn && player1Modern) {
+        if (player1Turn && player1Modern) {
 
-			// updateParameterInput will be called repeatedly as long as the
-			// shot is not fired. This if statement makes sure the statements it
-			// contains are only called once and at the beginning of the
-			// parameterInputState.
-			if (!world.paramPlayer1.isShowOld()) {
+            // updateParameterInput will be called repeatedly as long as the
+            // shot is not fired. This if statement makes sure the statements it
+            // contains are only called once and at the beginning of the
+            // parameterInputState.
+            if (!world.paramPlayer1.isShowOld()) {
 
-				// show the old parameterization
-				world.paramPlayer1.setShowOld(true);
+                // show the old parameterization
+                world.paramPlayer1.setShowOld(true);
 
-				// if 0 shots have been fired before, there will be no old
-				// parameterization to show. Thus, indicate whose turn it is
-				// with an extra label.
-				if (world.gorilla1.numShotsFired == 0) {
-					gameGUI.showPlayer1Turn();
-				}
-			}
+                // if 0 shots have been fired before, there will be no old
+                // parameterization to show. Thus, indicate whose turn it is
+                // with an extra label.
+                if (world.gorilla1.numShotsFired == 0) {
+                    gameGUI.showPlayer1Turn();
+                }
+            }
 
-		} else if (player2Turn && player2Modern) {
+        } else if (player2Turn && player2Modern) {
 
-			// same for player 2 -> Additionally do not show the turn label if
-			// it is the computer's turn.
-			if (!world.paramPlayer2.isShowOld()) {
+            // same for player 2 -> Additionally do not show the turn label if
+            // it is the computer's turn.
+            if (!world.paramPlayer2.isShowOld()) {
 
-				world.paramPlayer2.setShowOld(true);
+                world.paramPlayer2.setShowOld(true);
 
-				if (world.gorilla2.numShotsFired == 0
-						&& !(gameType == GAME_TYPE_AI)) {
-					gameGUI.showPlayer2Turn();
-				}
-			}
-		}
+                if (world.gorilla2.numShotsFired == 0 && !(gameType == GAME_TYPE_AI)) {
+                    gameGUI.showPlayer2Turn();
+                }
+            }
+        }
 
-		// if it is the computers turn and after a short pause, let the ai
-		// calculate the shot parameters and do the shot
-		if (gameType == GAME_TYPE_AI && player2Turn
-				&& levelPlayTime >= AI_LEVEL_THINK_TIME) {
+        // if it is the computers turn and after a short pause, let the ai
+        // calculate the shot parameters and do the shot
+        if (gameType == GAME_TYPE_AI && player2Turn && levelPlayTime >= AI_LEVEL_THINK_TIME) {
 
-			ai.determineShot();
-
-			generateShot(ai.getAngle(), ai.getVelocity());
-		}
-	}
-
-	/**
-	 * update method for the banana flying gamestate
-	 * 
-	 * @param delta
-	 *            the delta time of the libgdx update
-	 */
-	private void updateBananaFlying(float delta) {
+            ai.determineShot();
 
-		// make small time steps, which approximately cover every pixel position
-		// of the banana
-		for (float time = 0.0026f; time < delta; time += 0.0026f) {
-
-			// if the step update returned true, the shot finished (hit city
-			// or gorilla or left screen). Stop stepping then.
-			if (stepBananaFlying(0.0026f)) {
-				break;
-			}
-		}
-	}
-
-	/**
-	 * @param delta
-	 *            the time step size
-	 * @return true if the shot terminated (hit city, a gorilla, or left the
-	 *         screen), otherwise false
-	 */
-	private boolean stepBananaFlying(float delta) {
-
-		world.update(delta);
-
-		world.checkThrowingCompleted(whoseTurn);
-
-		world.checkSunHit();
+            generateShot(ai.getAngle(), ai.getVelocity());
+        }
+    }
 
-		if (world.checkCityCollision()) {
+    /**
+     * update method for the banana flying gamestate
+     * 
+     * @param delta
+     *            the delta time of the libgdx update
+     */
+    private void updateBananaFlying(float delta) {
 
-			if (Options.getInstance().isSoundOn()) {
-				Assets.cityHit.play(Gorillas.VOLUME);
-			}
-			Gorilla aim = whoseTurn == TURN_PLAYER_1 ? world.gorilla2
-					: world.gorilla1;
-			if (!(whoseTurn == TURN_PLAYER_2 && gameType == GAME_TYPE_AI)) {
-				mocker.cityHit(world.currentShot, aim);
-			}
+        // make small time steps, which approximately cover every pixel position
+        // of the banana
+        for (float time = 0.0026f; time < delta; time += 0.0026f) {
 
-			world.currentShot = null;
-			world.city.startDestruction();
-			world.sun.smile();
-			state = GAME_CITY_DESTRUCTION;
-			return true;
+            // if the step update returned true, the shot finished (hit city
+            // or gorilla or left screen). Stop stepping then.
+            if (stepBananaFlying(0.0026f)) {
+                break;
+            }
+        }
+    }
 
-		} else if (world.checkGorillaHit(world.gorilla1)) {
+    /**
+     * @param delta
+     *            the time step size
+     * @return true if the shot terminated (hit city, a gorilla, or left the screen), otherwise
+     *         false
+     */
+    private boolean stepBananaFlying(float delta) {
 
-			if (Options.getInstance().isSoundOn()) {
-				Assets.gorillaExplode.play(Gorillas.VOLUME);
-				Assets.victoryDance.play(Gorillas.VOLUME);
-			}
+        world.update(delta);
 
-			Gorilla winner = world.gorilla2;
-			Gorilla thrower = whoseTurn == TURN_PLAYER_1 ? world.gorilla1
-					: world.gorilla2;
-			if (!(whoseTurn == TURN_PLAYER_2 && gameType == GAME_TYPE_AI)) {
-				mocker.gorillaHit(winner, thrower);
-			}
+        world.checkThrowingCompleted(whoseTurn);
 
-			world.sun.smile();
-			state = GAME_GORILLA_1_HIT;
-			return true;
+        world.checkSunHit();
 
-		} else if (world.checkGorillaHit(world.gorilla2)) {
+        if (world.checkCityCollision()) {
 
-			if (Options.getInstance().isSoundOn()) {
-				Assets.gorillaExplode.play(Gorillas.VOLUME);
-				Assets.victoryDance.play(Gorillas.VOLUME);
-			}
+            if (Options.getInstance().isSoundOn()) {
+                Assets.cityHit.play(Gorillas.VOLUME);
+            }
+            Gorilla aim = whoseTurn == TURN_PLAYER_1 ? world.gorilla2 : world.gorilla1;
+            if (!(whoseTurn == TURN_PLAYER_2 && gameType == GAME_TYPE_AI)) {
+                mocker.cityHit(world.currentShot, aim);
+            }
 
-			Gorilla winner = world.gorilla1;
-			Gorilla thrower = whoseTurn == TURN_PLAYER_1 ? world.gorilla1
-					: world.gorilla2;
-			if (!(whoseTurn == TURN_PLAYER_2 && gameType == GAME_TYPE_AI)) {
-				mocker.gorillaHit(winner, thrower);
-			}
+            world.currentShot = null;
+            world.city.startDestruction();
+            world.sun.smile();
+            state = GAME_CITY_DESTRUCTION;
+            return true;
 
-			world.sun.smile();
-			state = GAME_GORILLA_2_HIT;
-			return true;
+        } else if (world.checkGorillaHit(world.gorilla1)) {
 
-		} else if (world.checkLeaveScreen()) {
+            if (Options.getInstance().isSoundOn()) {
+                Assets.gorillaExplode.play(Gorillas.VOLUME);
+                Assets.victoryDance.play(Gorillas.VOLUME);
+            }
 
-			if (!(whoseTurn == TURN_PLAYER_2 && gameType == GAME_TYPE_AI)) {
-				mocker.shotLeftScreen(world.currentShot);
-			}
-			world.currentShot = null;
-			world.sun.smile();
-			state = GAME_LEFT_SCREEN;
-			return true;
-		}
+            Gorilla winner = world.gorilla2;
+            Gorilla thrower = whoseTurn == TURN_PLAYER_1 ? world.gorilla1 : world.gorilla2;
+            if (!(whoseTurn == TURN_PLAYER_2 && gameType == GAME_TYPE_AI)) {
+                mocker.gorillaHit(winner, thrower);
+            }
 
-		return false;
-	}
+            world.sun.smile();
+            state = GAME_GORILLA_1_HIT;
+            return true;
 
-	private void updateCityDestruction(float delta) {
+        } else if (world.checkGorillaHit(world.gorilla2)) {
 
-		timeShotTerminated += delta;
+            if (Options.getInstance().isSoundOn()) {
+                Assets.gorillaExplode.play(Gorillas.VOLUME);
+                Assets.victoryDance.play(Gorillas.VOLUME);
+            }
 
-		if (world.cityDestructionCompleted()
-				&& timeShotTerminated >= MESSAGE_SHOW_TIME) {
-			timeShotTerminated = 0;
-			switchTurns();
-			state = GAME_PARAMETER_INPUT;
-			gameGUI.resetMessage();
-		}
-	}
+            Gorilla winner = world.gorilla1;
+            Gorilla thrower = whoseTurn == TURN_PLAYER_1 ? world.gorilla1 : world.gorilla2;
+            if (!(whoseTurn == TURN_PLAYER_2 && gameType == GAME_TYPE_AI)) {
+                mocker.gorillaHit(winner, thrower);
+            }
 
-	private void updateGorilla1Hit() {
+            world.sun.smile();
+            state = GAME_GORILLA_2_HIT;
+            return true;
 
-		if (world.checkCheeringCompleted(world.gorilla2)) {
-			world.scorePlayer2++;
-			if (world.scorePlayer2 == Options.getInstance().getRounds()) {
+        } else if (world.checkLeaveScreen()) {
 
-				gameGUI.showWinDialog(world.namePlayer2);
-				gameGUI.updateScore(world.scorePlayer1, world.scorePlayer2);
+            if (!(whoseTurn == TURN_PLAYER_2 && gameType == GAME_TYPE_AI)) {
+                mocker.shotLeftScreen(world.currentShot);
+            }
+            world.currentShot = null;
+            world.sun.smile();
+            state = GAME_LEFT_SCREEN;
+            return true;
+        }
 
-				state = GAME_PAUSED;
-			} else {
-				generateLevel();
-			}
-		}
-	}
+        return false;
+    }
 
-	private void updateGorilla2Hit() {
+    private void updateCityDestruction(float delta) {
 
-		if (world.checkCheeringCompleted(world.gorilla1)) {
+        timeShotTerminated += delta;
 
-			world.scorePlayer1++;
+        if (world.cityDestructionCompleted() && timeShotTerminated >= MESSAGE_SHOW_TIME) {
+            timeShotTerminated = 0;
+            switchTurns();
+            state = GAME_PARAMETER_INPUT;
+            gameGUI.resetMessage();
+        }
+    }
 
-			if (world.scorePlayer1 == Options.getInstance().getRounds()) {
+    private void updateGorilla1Hit() {
 
-				gameGUI.showWinDialog(world.namePlayer1);
-				gameGUI.updateScore(world.scorePlayer1, world.scorePlayer2);
+        if (world.checkCheeringCompleted(world.gorilla2)) {
+            world.scorePlayer2++;
+            if (world.scorePlayer2 == Options.getInstance().getRounds()) {
 
-				state = GAME_PAUSED;
-			} else {
-				generateLevel();
-			}
-		}
-	}
+                gameGUI.showWinDialog(world.namePlayer2);
+                gameGUI.updateScore(world.scorePlayer1, world.scorePlayer2);
 
-	private void updateLeftScreen(float delta) {
+                state = GAME_PAUSED;
+            } else {
+                generateLevel();
+            }
+        }
+    }
 
-		timeShotTerminated += delta;
+    private void updateGorilla2Hit() {
 
-		if (timeShotTerminated >= MESSAGE_SHOW_TIME) {
-			state = GAME_PARAMETER_INPUT;
-			timeShotTerminated = 0;
-			gameGUI.resetMessage();
-			switchTurns();
-		}
-	}
+        if (world.checkCheeringCompleted(world.gorilla1)) {
 
-	private void updateGamePaused() {
-	}
+            world.scorePlayer1++;
 
-	private void generateLevel() {
+            if (world.scorePlayer1 == Options.getInstance().getRounds()) {
 
-		gameGUI.initLevel();
-		gameGUI.updateScore(world.scorePlayer1, world.scorePlayer2);
-		gameGUI.resetMessage();
+                gameGUI.showWinDialog(world.namePlayer1);
+                gameGUI.updateScore(world.scorePlayer1, world.scorePlayer2);
 
-		world.generateLevel();
+                state = GAME_PAUSED;
+            } else {
+                generateLevel();
+            }
+        }
+    }
 
-		ai.nextLevel();
+    private void updateLeftScreen(float delta) {
 
-		state = GAME_PARAMETER_INPUT;
+        timeShotTerminated += delta;
 
-		switchTurns();
+        if (timeShotTerminated >= MESSAGE_SHOW_TIME) {
+            state = GAME_PARAMETER_INPUT;
+            timeShotTerminated = 0;
+            gameGUI.resetMessage();
+            switchTurns();
+        }
+    }
 
-		levelPlayTime = 0;
-	}
+    private void updateGamePaused() {
+    }
 
-	private void switchTurns() {
+    private void generateLevel() {
 
-		if (whoseTurn == TURN_PLAYER_1) {
-			whoseTurn = TURN_PLAYER_2;
-			gameGUI.hidePlayer1Widget();
+        gameGUI.initLevel();
+        gameGUI.updateScore(world.scorePlayer1, world.scorePlayer2);
+        gameGUI.resetMessage();
 
-			// if match against computer -> computer does not need widget
-			// if player2 controls with touch or click -> no widget
-			if (gameType == GAME_TYPE_1_ON_1
-					&& controlPlayer2.equals(ControlType.CLASSIC)) {
-				gameGUI.showPlayer2Widget();
-			}
-		} else {
-			whoseTurn = TURN_PLAYER_1;
+        world.generateLevel();
 
-			if (controlPlayer1.equals(ControlType.CLASSIC)) {
-				gameGUI.showPlayer1Widget();
-			}
-			gameGUI.hidePlayer2Widget();
-		}
-	}
+        ai.nextLevel();
 
-	public void generateShot(int angle, int velocity) {
+        state = GAME_PARAMETER_INPUT;
 
-		if (state == GAME_PARAMETER_INPUT) {
+        switchTurns();
 
-			if (Options.getInstance().isSoundOn()) {
-				Assets.throwStart.play(Gorillas.VOLUME);
-			}
+        levelPlayTime = 0;
+    }
 
-			Gorilla shooter;
-			if (whoseTurn == TURN_PLAYER_1) {
-				shooter = world.gorilla1;
-				gameGUI.hidePlayer1Widget();
-			} else {
-				shooter = world.gorilla2;
-				gameGUI.hidePlayer2Widget();
-			}
+    private void switchTurns() {
 
-			if (!(whoseTurn == TURN_PLAYER_2 && gameType == GAME_TYPE_AI)) {
-				// scale down velocity for small screens
-				if (Gorillas.worldWidth / 800 < 1) {
-					velocity = (int) (velocity * Gorillas.worldWidth / 800);
-				}
-			}
+        if (whoseTurn == TURN_PLAYER_1) {
+            whoseTurn = TURN_PLAYER_2;
+            gameGUI.hidePlayer1Widget();
 
-			world.generateShot(shooter, angle, velocity);
-			state = GAME_BANANA_FLYING;
-		}
-	}
+            // if match against computer -> computer does not need widget
+            // if player2 controls with touch or click -> no widget
+            if (gameType == GAME_TYPE_1_ON_1 && controlPlayer2.equals(ControlType.CLASSIC)) {
+                gameGUI.showPlayer2Widget();
+            }
+        } else {
+            whoseTurn = TURN_PLAYER_1;
 
-	public void quitMatch() {
-		game.setScreen(game.mainMenuScreen);
-	}
+            if (controlPlayer1.equals(ControlType.CLASSIC)) {
+                gameGUI.showPlayer1Widget();
+            }
+            gameGUI.hidePlayer2Widget();
+        }
+    }
 
-	public void endPause() {
-		state = stateBeforePaused;
-	}
+    public void generateShot(int angle, int velocity) {
 
-	@Override
-	public void updateTextElements() {
-		gameGUI.updateTextElements();
-	}
+        if (state == GAME_PARAMETER_INPUT) {
 
-	@Override
-	protected void handleBackKey() {
+            if (Options.getInstance().isSoundOn()) {
+                Assets.throwStart.play(Gorillas.VOLUME);
+            }
 
-		if ((Gdx.input.isKeyJustPressed(Keys.BACK) || Gdx.input
-				.isKeyJustPressed(Keys.ESCAPE)) && state != GAME_PAUSED) {
+            Gorilla shooter;
+            if (whoseTurn == TURN_PLAYER_1) {
+                shooter = world.gorilla1;
+                gameGUI.hidePlayer1Widget();
+            } else {
+                shooter = world.gorilla2;
+                gameGUI.hidePlayer2Widget();
+            }
 
-			stateBeforePaused = state;
-			state = GAME_PAUSED;
+            if (!(whoseTurn == TURN_PLAYER_2 && gameType == GAME_TYPE_AI)) {
+                // scale down velocity for small screens
+                if (Gorillas.worldWidth / 800 < 1) {
+                    velocity = (int) (velocity * Gorillas.worldWidth / 800);
+                }
+            }
 
-			gameGUI.showQuitDialog();
-		}
-	}
+            world.generateShot(shooter, angle, velocity);
+            state = GAME_BANANA_FLYING;
+        }
+    }
 
-	@Override
-	public void render(float delta) {
+    public void quitMatch() {
+        game.setScreen(game.mainMenuScreen);
+    }
 
-		// fpsLogger.log();
+    public void endPause() {
+        state = stateBeforePaused;
+    }
 
-		update(delta);
+    @Override
+    public void updateTextElements() {
+        gameGUI.updateTextElements();
+    }
 
-		if (delta > 0.02f) {
-			Gdx.app.debug("Performance", "The frame took longer than 20 ms -> "
-					+ delta);
-		}
+    @Override
+    protected void handleBackKey() {
 
-		Gdx.gl.glClearColor(0, 0, (10 * 16 + 8 * 1) / 255f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if ((Gdx.input.isKeyJustPressed(Keys.BACK) || Gdx.input.isKeyJustPressed(Keys.ESCAPE))
+                && state != GAME_PAUSED) {
 
-		worldRenderer.render();
+            stateBeforePaused = state;
+            state = GAME_PAUSED;
 
-		super.render(delta);
-	}
+            gameGUI.showQuitDialog();
+        }
+    }
 
-	@Override
-	public void show() {
+    @Override
+    public void resize(int width, int height) {
+        worldRenderer.resize(width, height);
 
-		Assets.mainTheme.stop();
+        super.resize(width, height);
+    }
 
-		super.show();
+    @Override
+    public void render(float delta) {
 
-		if (Options.getInstance().isSoundOn()) {
-			Assets.gameStart.play(Gorillas.VOLUME);
-		}
+        // fpsLogger.log();
 
-		world.initGame();
+        update(delta);
 
-		state = GAME_PARAMETER_INPUT;
-		whoseTurn = TURN_PLAYER_1;
+        if (delta > 0.02f) {
+            Gdx.app.debug("Performance", "The frame took longer than 20 ms -> " + delta);
+        }
 
-		gameGUI.initGame();
+        Gdx.gl.glClearColor(0, 0, (10 * 16 + 8 * 1) / 255f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		ai.nextLevel();
-		ai.setDifficulty(Options.getInstance().getDifficulty());
-	}
+        worldRenderer.render();
 
-	@Override
-	public void resize(int width, int height) {
-		worldRenderer.resize(width, height);
-		super.resize(width, height);
-	}
+        super.render(delta);
+    }
 
-	@Override
-	public void hide() {
-		world.paramPlayer1.reset();
-		world.paramPlayer2.reset();
-		world.currentShot = null;
-	}
+    @Override
+    public void show() {
 
-	@Override
-	public void resume() {
-		world.resume();
-		super.resume();
-	}
+        Assets.mainTheme.stop();
 
-	@Override
-	public void dispose() {
-		world.dispose();
-		worldRenderer.dispose();
-		super.dispose();
-	}
+        super.show();
+
+        if (Options.getInstance().isSoundOn()) {
+            Assets.gameStart.play(Gorillas.VOLUME);
+        }
+
+        world.initGame();
+
+        state = GAME_PARAMETER_INPUT;
+        whoseTurn = TURN_PLAYER_1;
+
+        gameGUI.initGame();
+
+        ai.nextLevel();
+        ai.setDifficulty(Options.getInstance().getDifficulty());
+    }
+
+    @Override
+    public void hide() {
+        world.paramPlayer1.reset();
+        world.paramPlayer2.reset();
+        world.currentShot = null;
+    }
+
+    @Override
+    public void resume() {
+        world.resume();
+        super.resume();
+    }
+
+    @Override
+    public void dispose() {
+        world.dispose();
+        worldRenderer.dispose();
+        super.dispose();
+    }
 }

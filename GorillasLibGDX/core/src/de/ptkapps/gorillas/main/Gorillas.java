@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import de.ptkapps.gorillas.ActionResolver;
 import de.ptkapps.gorillas.assets.Assets;
 import de.ptkapps.gorillas.options.Options;
 import de.ptkapps.gorillas.screens.GameScreen;
@@ -23,171 +24,170 @@ import de.ptkapps.gorillas.screens.setup.GameAISetupScreen;
 
 public class Gorillas extends Game {
 
-	public static final float VOLUME = 0.7f;
+    public static final float VOLUME = 0.7f;
 
-	public static float worldWidth;
-	public static float worldHeight;
+    public static final int worldWidth = 640;
+    public static final int worldHeight = 320;
 
-	public static float normalLabelHeight;
-	public static float scoreLabelWidth;
+    public int guiWidth;
+    public int guiHeight;
 
-	public final int SMALL_MAX_WIDTH = 479;
-	public final int NORMAL_MAX_WIDTH = 799;
-	public final int LARGE_MAX_WIDTH = 1023;
-	public final int XLARGE_MAX_WIDTH = 1536;
+    public static float normalLabelHeight;
+    public static float scoreLabelWidth;
 
-	public SpriteBatch batch;
-	public Skin skin;
+    public SpriteBatch batch;
+    public Skin skin;
 
-	public LoadScreen loadScreen;
-	public MainMenuScreen mainMenuScreen;
-	public Game1on1SetupScreen game1on1SetupScreen;
-	public GameAISetupScreen gameAISetupScreen;
-	public GameScreen gameScreen;
-	public OptionsScreen optionsScreen;
-	public HelpScreen1 helpScreen1;
-	public HelpScreen2 helpScreen2;
-	public HelpScreen3 helpScreen3;
-	public HelpScreen4 helpScreen4;
-	public HelpScreen5 helpScreen5;
+    public LoadScreen loadScreen;
+    public MainMenuScreen mainMenuScreen;
+    public Game1on1SetupScreen game1on1SetupScreen;
+    public GameAISetupScreen gameAISetupScreen;
+    public GameScreen gameScreen;
+    public OptionsScreen optionsScreen;
+    public HelpScreen1 helpScreen1;
+    public HelpScreen2 helpScreen2;
+    public HelpScreen3 helpScreen3;
+    public HelpScreen4 helpScreen4;
+    public HelpScreen5 helpScreen5;
 
-	public AssetManager manager;
+    public AssetManager manager;
 
-	public enum ScreenSize {
-		SMALL, NORMAL, LARGE, XLARGE, XXLARGE
-	}
+    public enum ScreenSize {
+        SMALL, NORMAL, LARGE, XLARGE, XXLARGE
+    }
 
-	private ScreenSize screenSize;
+    private ScreenSize screenSize;
 
-	@Override
-	public void create() {
+    public ActionResolver actionResolver;
 
-		// Gdx.app.setLogLevel(Application.LOG_DEBUG);
+    public Gorillas(ActionResolver actionResolver) {
+        this.actionResolver = actionResolver;
+    }
 
-		batch = new SpriteBatch();
+    @Override
+    public void create() {
 
-		worldWidth = Gdx.graphics.getWidth();
-		worldHeight = Gdx.graphics.getHeight();
+        // Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
-		if (worldWidth <= SMALL_MAX_WIDTH) {
-			screenSize = ScreenSize.SMALL;
-		} else if (worldWidth <= NORMAL_MAX_WIDTH) {
-			screenSize = ScreenSize.NORMAL;
-		} else if (worldWidth <= LARGE_MAX_WIDTH) {
-			screenSize = ScreenSize.LARGE;
-		} else if (worldWidth <= XLARGE_MAX_WIDTH) {
-			screenSize = ScreenSize.XLARGE;
-		} else {
-			screenSize = ScreenSize.XXLARGE;
-		}
+        batch = new SpriteBatch();
 
-		manager = new AssetManager();
+        manager = new AssetManager();
 
-		manager.load(
-				"gui/gui-" + screenSize.toString().toLowerCase() + ".json",
-				Skin.class);
+        determineGuiSize();
 
-		Assets.load(manager, screenSize);
+        manager.load("gui/gui-" + "large" + ".json", Skin.class);
 
-		loadScreen = new LoadScreen(this);
-		this.setScreen(loadScreen);
-	}
+        Assets.load(manager, screenSize);
 
-	@Override
-	public void resume() {
-		// only the current screen will receive a resume call by the libgdx
-		// framework. The city texture of the world of HelpScreen1 is unmanaged
-		// and gets lost -> it will be recreated in the resume method of
-		// HelpScreen1 (the world of HelpScreen1 is shared by all the other
-		// helpscreens).
-		if (!getScreen().equals(helpScreen1)) {
-			if (helpScreen1 != null) {
-				helpScreen1.resume();
-			}
-		}
-		super.resume();
-	}
+        loadScreen = new LoadScreen(this);
+        this.setScreen(loadScreen);
+    }
 
-	@Override
-	public void render() {
-		super.render();
-	}
+    private void determineGuiSize() {
+        
+        guiWidth = worldWidth;
+        guiHeight = Math.round(guiWidth * Gdx.graphics.getHeight() / (float) Gdx.graphics.getWidth());
+    }
+    
+    @Override
+    public void resume() {
+        // only the current screen will receive a resume call by the libgdx
+        // framework. The city texture of the world of HelpScreen1 is unmanaged
+        // and gets lost -> it will be recreated in the resume method of
+        // HelpScreen1 (the world of HelpScreen1 is shared by all the other
+        // helpscreens).
+        if (!getScreen().equals(helpScreen1)) {
+            if (helpScreen1 != null) {
+                helpScreen1.resume();
+            }
+        }
+        super.resume();
+    }
 
-	@Override
-	public void dispose() {
-		batch.dispose();
-		manager.dispose();
-		if (mainMenuScreen != null) {
-			mainMenuScreen.dispose();
-		}
-		if (game1on1SetupScreen != null) {
-			game1on1SetupScreen.dispose();
-		}
-		if (gameAISetupScreen != null) {
-			gameAISetupScreen.dispose();
-		}
-		if (gameScreen != null) {
-			gameScreen.dispose();
-		}
-		if (optionsScreen != null) {
-			optionsScreen.dispose();
-		}
-		if (helpScreen1 != null) {
-			helpScreen1.dispose();
-		}
-	}
+    @Override
+    public void render() {
+        super.render();
+    }
 
-	public void finishSetup() {
+    @Override
+    public void resize(int width, int height) {
+        
+        determineGuiSize();
+        super.resize(width, height);
+    }
+    
+    @Override
+    public void dispose() {
+        batch.dispose();
+        manager.dispose();
+        if (mainMenuScreen != null) {
+            mainMenuScreen.dispose();
+        }
+        if (game1on1SetupScreen != null) {
+            game1on1SetupScreen.dispose();
+        }
+        if (gameAISetupScreen != null) {
+            gameAISetupScreen.dispose();
+        }
+        if (gameScreen != null) {
+            gameScreen.dispose();
+        }
+        if (optionsScreen != null) {
+            optionsScreen.dispose();
+        }
+        if (helpScreen1 != null) {
+            helpScreen1.dispose();
+        }
+    }
 
-		long start = System.currentTimeMillis();
+    public void finishSetup() {
 
-		skin = manager.get("gui/gui-" + screenSize.toString().toLowerCase()
-				+ ".json", Skin.class);
+        long start = System.currentTimeMillis();
 
-		Label scoreDummyLabel = new Label("10 > score < 10", skin);
-		normalLabelHeight = scoreDummyLabel.getPrefHeight();
-		scoreLabelWidth = scoreDummyLabel.getPrefWidth();
+        skin = manager.get("gui/gui-" + "large" + ".json", Skin.class);
 
-		Assets.finishSetup(manager);
+        Label scoreDummyLabel = new Label("10 > score < 10", skin);
+        normalLabelHeight = scoreDummyLabel.getPrefHeight();
+        scoreLabelWidth = scoreDummyLabel.getPrefWidth();
 
-		createScreens();
+        Assets.finishSetup(manager);
 
-		Gdx.app.debug("Performance",
-				"Finish setup took " + (System.currentTimeMillis() - start)
-						+ " ms.");
+        createScreens();
 
-		if (Options.getInstance().isSoundOn()) {
-			Assets.mainTheme.play(Gorillas.VOLUME);
-		}
+        Gdx.app.debug("Performance", "Finish setup took " + (System.currentTimeMillis() - start) + " ms.");
 
-		this.setScreen(mainMenuScreen);
-	}
+        if (Options.getInstance().isSoundOn()) {
+            Assets.mainTheme.play(Gorillas.VOLUME);
+        }
 
-	private void createScreens() {
+        this.setScreen(mainMenuScreen);
+    }
 
-		game1on1SetupScreen = new Game1on1SetupScreen(this);
-		gameAISetupScreen = new GameAISetupScreen(this);
-		mainMenuScreen = new MainMenuScreen(this);
-		gameScreen = new GameScreen(this);
-		optionsScreen = new OptionsScreen(this);
-		helpScreen1 = new HelpScreen1(this);
-		helpScreen2 = new HelpScreen2(this);
-		helpScreen3 = new HelpScreen3(this);
-		helpScreen4 = new HelpScreen4(this);
-		helpScreen5 = new HelpScreen5(this);
-	}
+    private void createScreens() {
 
-	public void updateTextElements() {
+        game1on1SetupScreen = new Game1on1SetupScreen(this);
+        gameAISetupScreen = new GameAISetupScreen(this);
+        mainMenuScreen = new MainMenuScreen(this);
+        gameScreen = new GameScreen(this);
+        optionsScreen = new OptionsScreen(this);
+        helpScreen1 = new HelpScreen1(this);
+        helpScreen2 = new HelpScreen2(this);
+        helpScreen3 = new HelpScreen3(this);
+        helpScreen4 = new HelpScreen4(this);
+        helpScreen5 = new HelpScreen5(this);
+    }
 
-		mainMenuScreen.updateTextElements();
-		game1on1SetupScreen.updateTextElements();
-		gameAISetupScreen.updateTextElements();
-		gameScreen.updateTextElements();
-		optionsScreen.updateTextElements();
-		helpScreen1.updateTextElements();
-		helpScreen2.updateTextElements();
-		helpScreen3.updateTextElements();
-		helpScreen4.updateTextElements();
-		helpScreen5.updateTextElements();
-	}
+    public void updateTextElements() {
+
+        mainMenuScreen.updateTextElements();
+        game1on1SetupScreen.updateTextElements();
+        gameAISetupScreen.updateTextElements();
+        gameScreen.updateTextElements();
+        optionsScreen.updateTextElements();
+        helpScreen1.updateTextElements();
+        helpScreen2.updateTextElements();
+        helpScreen3.updateTextElements();
+        helpScreen4.updateTextElements();
+        helpScreen5.updateTextElements();
+    }
 }

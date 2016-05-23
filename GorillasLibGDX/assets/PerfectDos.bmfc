@@ -1,0 +1,58 @@
+# AngelCode Bitmap Font Generator configuration file
+fileVersion=1
+
+# font settings
+fontName=Perfect DOS VGA 437 Win
+fontFile=
+charSet=1
+fontSize=20
+aa=1
+scaleH=100
+useSmoothing=0
+isBold=0
+isItalic=0
+useUnicode=1
+disableBoxChars=1
+outputInvalidCharGlyph=0
+dontIncludeKerningPairs=0
+useHinting=1
+renderFromOutline=0
+useClearType=1
+
+# character alignment
+paddingDown=0
+paddingUp=0
+paddingRight=0
+paddingLeft=0
+spacingHoriz=1
+spacingVert=1
+useFixedHeight=0
+forceZero=0
+
+# output file
+outWidth=256
+outHeight=256
+outBitDepth=32
+fontDescFormat=0
+fourChnlPacked=0
+textureFormat=png
+textureCompression=0
+alphaChnl=0
+redChnl=4
+greenChnl=4
+blueChnl=4
+invA=0
+invR=0
+invG=0
+invB=0
+
+# outline
+outlineThickness=0
+
+# selected chars
+chars=1-127,160-163,165,170-172,176-178,181,183,186-189,191,196-199,201,209,214,220,223-226,228-239,241
+chars=242-244,246-247,249-252,255,402,915,920,931,934,937,945,948-949,960,963-964,966,8319,8359,8729-8730
+chars=8734,8745,8776,8801,8804-8805,8976,8992-8993,9472,9474,9484,9488,9492,9496,9500,9508,9516,9524,9532
+chars=9552-9580,9600,9604,9608,9612,9616-9619,9632
+
+# imported icon images

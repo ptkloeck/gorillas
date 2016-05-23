@@ -119,7 +119,7 @@ public class Game1on1SetupScreen extends GameSetupScreen {
 		player1ErrorLabel.setText("");
 		player2ErrorLabel.setText("");
 
-		stage.addActor(table);
+		guiStage.addActor(table);
 
 		updateTextElements();
 	}
@@ -140,7 +140,7 @@ public class Game1on1SetupScreen extends GameSetupScreen {
 		// checked at a time. Trying to implement this feature with
 		// ChangeListeners or individual InputListeners failed, cause they
 		// always trigger each other.
-		stage.addListener(new InputListener() {
+		guiStage.addListener(new InputListener() {
 
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y,

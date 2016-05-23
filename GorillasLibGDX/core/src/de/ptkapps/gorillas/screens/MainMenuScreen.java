@@ -16,178 +16,191 @@ import de.ptkapps.gorillas.screens.gui.GUIConstants;
 
 public class MainMenuScreen extends GorillasScreen {
 
-	private TextButton start1on1GameButton;
-	private TextButton startAIGameButton;
-	private TextButton settingsButton;
-	private TextButton helpButton;
-	private TextButton quitGameButton;
-	private Table table;
+    private TextButton start1on1GameButton;
+    private TextButton startAIGameButton;
+    private TextButton achievementsButton;
+    private TextButton settingsButton;
+    private TextButton helpButton;
+    private TextButton quitGameButton;
+    private Table table;
 
-	private long enterTime;
+    private long enterTime;
 
-	public MainMenuScreen(Gorillas game) {
+    public MainMenuScreen(Gorillas game) {
 
-		super(game);
+        super(game);
 
-		Skin skin = game.skin;
+        Skin skin = game.skin;
 
-		start1on1GameButton = new TextButton("", skin);
-		start1on1GameButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				start1on1Game();
-			}
-		});
+        start1on1GameButton = new TextButton("", skin);
+        start1on1GameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                start1on1Game();
+            }
+        });
 
-		startAIGameButton = new TextButton("", skin);
-		startAIGameButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				startAIGame();
-			}
-		});
+        startAIGameButton = new TextButton("", skin);
+        startAIGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                startAIGame();
+            }
+        });
 
-		settingsButton = new TextButton("", skin);
-		settingsButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				toOptionsScreen();
-			}
-		});
+        achievementsButton = new TextButton("", skin);
+        achievementsButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                showAchievements();
+            }
+        });
 
-		helpButton = new TextButton("", skin);
-		helpButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				toHelpScreen();
-			}
-		});
+        settingsButton = new TextButton("", skin);
+        settingsButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                toOptionsScreen();
+            }
+        });
 
-		quitGameButton = new TextButton("", skin);
-		quitGameButton.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				Gdx.app.exit();
-			}
-		});
-		if (!(Gdx.app.getType() == ApplicationType.Android)) {
-			stage.addActor(quitGameButton);
-		}
+        helpButton = new TextButton("", skin);
+        helpButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                toHelpScreen();
+            }
+        });
 
-		table = new Table(skin);
-		table.setBackground("menuBackground");
+        quitGameButton = new TextButton("", skin);
+        quitGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.exit();
+            }
+        });
+        if (!(Gdx.app.getType() == ApplicationType.Android)) {
+            guiStage.addActor(quitGameButton);
+        }
 
-		table.add(startAIGameButton).pad(5);		
-		table.row();
-		table.add(start1on1GameButton).pad(5);
-		table.row();
-		table.add(settingsButton).pad(5);
-		table.row();
-		table.add(helpButton).pad(5);
+        table = new Table(skin);
+        table.setBackground("menuBackground");
 
-		stage.addActor(table);
+        table.add(startAIGameButton).pad(5);
+        table.row();
+        table.add(start1on1GameButton).pad(5);
+        table.row();
+        table.add(achievementsButton).pad(5);
+        table.row();
+        table.add(settingsButton).pad(5);
+        table.row();
+        table.add(helpButton).pad(5);
 
-		updateTextElements();
-	}
+        guiStage.addActor(table);
 
-	private void start1on1Game() {
-		game.setScreen(game.game1on1SetupScreen);
-	}
+        updateTextElements();
+    }
 
-	private void startAIGame() {
-		game.setScreen(game.gameAISetupScreen);
-	}
+    private void start1on1Game() {
+        game.setScreen(game.game1on1SetupScreen);
+    }
 
-	private void toOptionsScreen() {
-		game.setScreen(game.optionsScreen);
-	}
+    private void startAIGame() {
+        game.setScreen(game.gameAISetupScreen);
+    }
 
-	private void toHelpScreen() {
-		game.setScreen(game.helpScreen1);
-	}
+    private void showAchievements() {
+        if (game.actionResolver.getSignedInGPGS()) {
+            game.actionResolver.getAchievementsGPGS();
+        } else {
+            game.actionResolver.loginGPGS();
+        }
+    }
 
-	@Override
-	public void updateTextElements() {
+    private void toOptionsScreen() {
+        game.setScreen(game.optionsScreen);
+    }
 
-		I18NBundle messagesBundle = Options.getInstance()
-				.getCurrentMessagesBundle();
+    private void toHelpScreen() {
+        game.setScreen(game.helpScreen1);
+    }
 
-		start1on1GameButton.setText(messagesBundle.get("startGame1on1"));
-		startAIGameButton.setText(messagesBundle.get("startAIGame"));
-		settingsButton.setText(messagesBundle.get("options"));
-		quitGameButton.setText(messagesBundle.get("quitApp"));
-		helpButton.setText(messagesBundle.get("help"));
+    @Override
+    public void updateTextElements() {
 
-		layout();
-	}
+        I18NBundle messagesBundle = Options.getInstance().getCurrentMessagesBundle();
 
-	@Override
-	public void show() {
+        start1on1GameButton.setText(messagesBundle.get("startGame1on1"));
+        startAIGameButton.setText(messagesBundle.get("startAIGame"));
+        achievementsButton.setText(messagesBundle.get("achievements"));
+        settingsButton.setText(messagesBundle.get("options"));
+        quitGameButton.setText(messagesBundle.get("quitApp"));
+        helpButton.setText(messagesBundle.get("help"));
 
-		Gdx.input.setCatchBackKey(true);
+        layout();
+    }
 
-		super.show();
+    @Override
+    public void show() {
 
-		enterTime = System.currentTimeMillis();
+        Gdx.input.setCatchBackKey(true);
 
-		resize((int) Gorillas.worldWidth, (int) Gorillas.worldHeight);
-	}
+        super.show();
 
-	private void layout() {
+        enterTime = System.currentTimeMillis();
 
-		int gap = 10;
+        resize((int) Gorillas.worldWidth, (int) Gorillas.worldHeight);
+    }
 
-		float start1on1ButtonWidth = start1on1GameButton.getPrefWidth();
-		float startAIButtonWidth = startAIGameButton.getPrefWidth();
-		float settingsButtonWidth = settingsButton.getPrefWidth();
-		float helpButtonWidth = helpButton.getPrefWidth();
+    private void layout() {
 
-		float maxWidth = Math.max(
-				Math.max(startAIButtonWidth, start1on1ButtonWidth),
-				Math.max(settingsButtonWidth, helpButtonWidth));
+        int gap = 10;
 
-		table.getCell(start1on1GameButton).width(
-				maxWidth + GUIConstants.DOS_BUTTON_CORRECT_X);
-		table.getCell(startAIGameButton).width(
-				maxWidth + GUIConstants.DOS_BUTTON_CORRECT_X);
-		table.getCell(settingsButton).width(
-				maxWidth + GUIConstants.DOS_BUTTON_CORRECT_X);
-		table.getCell(helpButton).width(
-				maxWidth + GUIConstants.DOS_BUTTON_CORRECT_X);
+        float start1on1ButtonWidth = start1on1GameButton.getPrefWidth();
+        float startAIButtonWidth = startAIGameButton.getPrefWidth();
+        float achievementsButtonWidth = achievementsButton.getPrefWidth();
+        float settingsButtonWidth = settingsButton.getPrefWidth();
+        float helpButtonWidth = helpButton.getPrefWidth();
 
-		table.pack();
+        float maxWidth = Math.max(Math.max(Math.max(startAIButtonWidth, start1on1ButtonWidth),
+                Math.max(settingsButtonWidth, helpButtonWidth)), achievementsButtonWidth);
 
-		float tableWidth = table.getPrefWidth();
-		float tableHeight = table.getPrefHeight();
+        table.getCell(start1on1GameButton).width(maxWidth + GUIConstants.DOS_BUTTON_CORRECT_X);
+        table.getCell(startAIGameButton).width(maxWidth + GUIConstants.DOS_BUTTON_CORRECT_X);
+        table.getCell(achievementsButton).width(maxWidth + GUIConstants.DOS_BUTTON_CORRECT_X);
+        table.getCell(settingsButton).width(maxWidth + GUIConstants.DOS_BUTTON_CORRECT_X);
+        table.getCell(helpButton).width(maxWidth + GUIConstants.DOS_BUTTON_CORRECT_X);
 
-		table.setPosition((int) (Gorillas.worldWidth / 2 - tableWidth / 2),
-				(int) (Gorillas.worldHeight / 2 - tableHeight / 2));
+        table.pack();
 
-		quitGameButton.setWidth(quitGameButton.getPrefWidth()
-				+ GUIConstants.DOS_BUTTON_CORRECT_X);
-		quitGameButton.setHeight(quitGameButton.getPrefHeight());
-		quitGameButton.setPosition(
-				Gorillas.worldWidth - quitGameButton.getWidth() - gap, gap);
-	}
+        float tableWidth = table.getPrefWidth();
+        float tableHeight = table.getPrefHeight();
 
-	@Override
-	public void render(float delta) {
+        table.setPosition((int) (Gorillas.worldWidth / 2 - tableWidth / 2), (int) (Gorillas.worldHeight / 2 - tableHeight / 2));
 
-		Gdx.gl.glClearColor(0, 0, (10 * 16 + 8 * 1) / 255f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        quitGameButton.setWidth(quitGameButton.getPrefWidth() + GUIConstants.DOS_BUTTON_CORRECT_X);
+        quitGameButton.setHeight(quitGameButton.getPrefHeight());
+        quitGameButton.setPosition(Gorillas.worldWidth - quitGameButton.getWidth() - gap, gap);
+    }
 
-		super.render(delta);
-	}
+    @Override
+    public void render(float delta) {
 
-	@Override
-	protected void handleBackKey() {
+        Gdx.gl.glClearColor(0, 0, (10 * 16 + 8 * 1) / 255f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// hack to prevent, that a press on the back key or a hit on escape
-		// terminates the app in spite those events were handled in another
-		// screen before
-		long currentTime = System.currentTimeMillis();
-		if (currentTime >= enterTime + 500) {
-			Gdx.app.exit();
-		}
-	}
+        super.render(delta);
+    }
+
+    @Override
+    protected void handleBackKey() {
+
+        // hack to prevent, that a press on the back key or a hit on escape
+        // terminates the app in spite those events were handled in another
+        // screen before
+        long currentTime = System.currentTimeMillis();
+        if (currentTime >= enterTime + 500) {
+            Gdx.app.exit();
+        }
+    }
 }

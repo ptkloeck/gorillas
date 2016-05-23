@@ -38,7 +38,7 @@ public abstract class GameSetupScreen extends GorillasScreen {
 			}
 		});
 		if (!(Gdx.app.getType() == ApplicationType.Android)) {
-			stage.addActor(mainMenuButton);
+			guiStage.addActor(mainMenuButton);
 		}
 
 		generateStartGameButton();

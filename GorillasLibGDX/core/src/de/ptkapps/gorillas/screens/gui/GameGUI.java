@@ -22,286 +22,264 @@ import de.ptkapps.gorillas.screens.gui.widgets.PlayerWidget.Position;
 
 public class GameGUI {
 
-	private GameScreen gameScreen;
+    private GameScreen gameScreen;
 
-	private Stage stage;
+    private Stage stage;
 
-	private Skin skin;
+    private Skin skin;
 
-	private PlayerWidget player1Widget;
-	private PlayerWidget player2Widget;
+    private PlayerWidget player1Widget;
+    private PlayerWidget player2Widget;
 
-	private Label player1NameLabel;
-	private Label player2NameLabel;
+    private Label player1NameLabel;
+    private Label player2NameLabel;
 
-	private Label player1TurnLabel;
-	private Label player2TurnLabel;
+    private Label player1TurnLabel;
+    private Label player2TurnLabel;
 
-	private Label messageLabel;
+    private Label messageLabel;
 
-	private Label score;
+    private Label score;
 
-	private Dialog quitDialog;
-	private Dialog winDialog;
+    private Dialog quitDialog;
+    private Dialog winDialog;
 
-	public GameGUI(GameScreen gameScreen, Stage stage, Skin skin) {
+    public GameGUI(GameScreen gameScreen, Stage stage, Skin skin) {
 
-		this.gameScreen = gameScreen;
-		this.stage = stage;
-		this.skin = skin;
+        this.gameScreen = gameScreen;
+        this.stage = stage;
+        this.skin = skin;
 
-		ApplicationType appType = Gdx.app.getType();
-		appType = ApplicationType.Android;
-		if (appType == ApplicationType.Desktop) {
-			player1Widget = new DesktopHtmlPlayerWidget(stage, gameScreen, skin);
-			player2Widget = new DesktopHtmlPlayerWidget(stage, gameScreen, skin);
-		} else if (appType == ApplicationType.Android) {
-			player1Widget = new AndroidPlayerWidget(stage, gameScreen, skin);
-			player2Widget = new AndroidPlayerWidget(stage, gameScreen, skin);
-		}
+        ApplicationType appType = Gdx.app.getType();
+        appType = ApplicationType.Android;
+        if (appType == ApplicationType.Desktop) {
+            player1Widget = new DesktopHtmlPlayerWidget(stage, gameScreen, skin);
+            player2Widget = new DesktopHtmlPlayerWidget(stage, gameScreen, skin);
+        } else if (appType == ApplicationType.Android) {
+            player1Widget = new AndroidPlayerWidget(stage, gameScreen, skin);
+            player2Widget = new AndroidPlayerWidget(stage, gameScreen, skin);
+        }
 
-		player1NameLabel = new Label("", skin);
-		player1NameLabel.setColor(GUIConstants.NAME_COLOR);
+        player1NameLabel = new Label("", skin);
+        player1NameLabel.setColor(GUIConstants.NAME_COLOR);
 
-		player2NameLabel = new Label("", skin);
-		player2NameLabel.setColor(GUIConstants.NAME_COLOR);
+        player2NameLabel = new Label("", skin);
+        player2NameLabel.setColor(GUIConstants.NAME_COLOR);
 
-		stage.addActor(player1NameLabel);
-		stage.addActor(player2NameLabel);
+        stage.addActor(player1NameLabel);
+        stage.addActor(player2NameLabel);
 
-		player1TurnLabel = new Label("", skin);
-		player2TurnLabel = new Label("", skin);
+        player1TurnLabel = new Label("", skin);
+        player2TurnLabel = new Label("", skin);
 
-		stage.addActor(player1TurnLabel);
-		stage.addActor(player2TurnLabel);
+        stage.addActor(player1TurnLabel);
+        stage.addActor(player2TurnLabel);
 
-		messageLabel = new Label("", skin);
+        messageLabel = new Label("", skin);
 
-		stage.addActor(messageLabel);
+        stage.addActor(messageLabel);
 
-		score = new Label("", skin);
+        score = new Label("", skin);
 
-		stage.addActor(score);
-	}
+        stage.addActor(score);
+    }
 
-	private void quitMatch() {
-		gameScreen.quitMatch();
-	}
+    private void quitMatch() {
+        gameScreen.quitMatch();
+    }
 
-	private void endPause() {
-		gameScreen.endPause();
-	}
+    private void endPause() {
+        gameScreen.endPause();
+    }
 
-	public void setPlayerNames(String player1Name, String player2Name) {
+    public void setPlayerNames(String player1Name, String player2Name) {
 
-		player1NameLabel.setText(player1Name);
-		player2NameLabel.setText(player2Name);
+        player1NameLabel.setText(player1Name);
+        player2NameLabel.setText(player2Name);
 
-		I18NBundle messagesBundle = Options.getInstance()
-				.getCurrentMessagesBundle();
+        I18NBundle messagesBundle = Options.getInstance().getCurrentMessagesBundle();
 
-		player1TurnLabel.setText(player1Name + messagesBundle.get("turn"));
-		player2TurnLabel.setText(player2Name + messagesBundle.get("turn"));
-	}
+        player1TurnLabel.setText(player1Name + messagesBundle.get("turn"));
+        player2TurnLabel.setText(player2Name + messagesBundle.get("turn"));
+    }
 
-	public void initGame() {
+    public void initGame() {
 
-		float frameWidth = Gorillas.worldWidth;
-		float frameHeight = Gorillas.worldHeight;
+        float frameWidth = Gorillas.worldWidth;
+        float frameHeight = Gorillas.worldHeight;
 
-		// adjust name label positions
-		player1NameLabel
-				.setPosition(GUIConstants.NAME_OFFSET_X, frameHeight
-						- player1NameLabel.getPrefHeight()
-						+ GUIConstants.NAME_OFFSET_Y);
-		player2NameLabel.setPosition(
-				frameWidth - player2NameLabel.getPrefWidth()
-						- GUIConstants.NAME_OFFSET_X, frameHeight
-						- player2NameLabel.getPrefHeight()
-						+ GUIConstants.NAME_OFFSET_Y);
+        // adjust name label positions
+        player1NameLabel.setPosition(GUIConstants.NAME_OFFSET_X,
+                frameHeight - player1NameLabel.getPrefHeight() + GUIConstants.NAME_OFFSET_Y);
+        player2NameLabel.setPosition(frameWidth - player2NameLabel.getPrefWidth()
+                - GUIConstants.NAME_OFFSET_X, frameHeight - player2NameLabel.getPrefHeight()
+                + GUIConstants.NAME_OFFSET_Y);
 
-		player1Widget.setPosition(Position.left);
-		player2Widget.setPosition(Position.right);
+        player1Widget.setPosition(Position.left);
+        player2Widget.setPosition(Position.right);
 
-		if (gameScreen != null) {
-			if (gameScreen.getControlPlayer1().equals(ControlType.CLASSIC)) {
-				player1Widget.setVisible(true);
-			} else {
-				player1Widget.setVisible(false);
-			}
-		}
-		player2Widget.setVisible(false);
+        if (gameScreen != null) {
+            if (gameScreen.getControlPlayer1().equals(ControlType.CLASSIC)) {
+                player1Widget.setVisible(true);
+            } else {
+                player1Widget.setVisible(false);
+            }
+        }
+        player2Widget.setVisible(false);
 
-		player1Widget.clear();
-		player2Widget.clear();
+        player1Widget.clear();
+        player2Widget.clear();
 
-		player1TurnLabel.setPosition(
-				frameWidth / 4f - player1TurnLabel.getPrefWidth() / 2f, 2 / 3f
-						* frameHeight + Assets.gorilla.getRegionHeight() + 5);
-		player2TurnLabel.setPosition(
-				frameWidth * 3 / 4f - player2TurnLabel.getPrefWidth() / 2f, 2
-						/ 3f * frameHeight + Assets.gorilla.getRegionHeight()
-						+ 5);
+        player1TurnLabel.setPosition(frameWidth / 4f - player1TurnLabel.getPrefWidth() / 2f, 2 / 3f
+                * frameHeight + Assets.gorilla.getRegionHeight() + 5);
+        player2TurnLabel.setPosition(frameWidth * 3 / 4f - player2TurnLabel.getPrefWidth() / 2f, 2 / 3f
+                * frameHeight + Assets.gorilla.getRegionHeight() + 5);
 
-		player1TurnLabel.setColor(1f, 1f, 1f, 0f);
-		player2TurnLabel.setColor(1f, 1f, 1f, 0f);
+        player1TurnLabel.setColor(1f, 1f, 1f, 0f);
+        player2TurnLabel.setColor(1f, 1f, 1f, 0f);
 
-		score.setText("0 > Score < 0");
-		score.pack();
+        score.setText("0 > Score < 0");
+        score.pack();
 
-		score.setPosition(frameWidth / 2 - score.getPrefWidth() / 2, 20 + 5);
+        score.setPosition(frameWidth / 2 - score.getPrefWidth() / 2, 20 + 5);
 
-		messageLabel.setPosition(frameWidth / 2, 2 / 3f * frameHeight
-				+ Assets.gorilla.getRegionHeight() + 5);
+        messageLabel.setPosition(frameWidth / 2, 2 / 3f * frameHeight + Assets.gorilla.getRegionHeight() + 5);
 
-		resetMessage();
-	}
+        resetMessage();
+    }
 
-	public void initLevel() {
-		player1Widget.clear();
-		player2Widget.clear();
-	}
+    public void initLevel() {
+        player1Widget.clear();
+        player2Widget.clear();
+    }
 
-	public void hidePlayer1Widget() {
-		player1Widget.setVisible(false);
-	}
+    public void hidePlayer1Widget() {
+        player1Widget.setVisible(false);
+    }
 
-	public void hidePlayer2Widget() {
-		player2Widget.setVisible(false);
-	}
+    public void hidePlayer2Widget() {
+        player2Widget.setVisible(false);
+    }
 
-	public void showPlayer1Widget() {
-		player1Widget.setVisible(true);
-	}
+    public void showPlayer1Widget() {
+        player1Widget.setVisible(true);
+    }
 
-	public void showPlayer2Widget() {
-		player2Widget.setVisible(true);
-	}
+    public void showPlayer2Widget() {
+        player2Widget.setVisible(true);
+    }
 
-	public void setMessage(String message) {
+    public void setMessage(String message) {
 
-		messageLabel.setText(message);
+        messageLabel.setText(message);
 
-		float frameWidth = Gorillas.worldWidth;
-		float frameHeight = Gorillas.worldHeight;
+        float frameWidth = Gorillas.worldWidth;
+        float frameHeight = Gorillas.worldHeight;
 
-		float messageWidth = messageLabel.getPrefWidth();
+        float messageWidth = messageLabel.getPrefWidth();
 
-		messageLabel.setPosition(frameWidth / 2 - messageWidth / 2, 2 / 3f * frameHeight
-				+ Assets.gorilla.getRegionHeight() + 5);
-	}
+        messageLabel.setPosition(frameWidth / 2 - messageWidth / 2,
+                2 / 3f * frameHeight + Assets.gorilla.getRegionHeight() + 5);
+    }
 
-	public void updateScore(int scorePlayer1, int scorePlayer2) {
-		score.setText(scorePlayer1 + " > Score < " + scorePlayer2);
-	}
+    public void updateScore(int scorePlayer1, int scorePlayer2) {
+        score.setText(scorePlayer1 + " > Score < " + scorePlayer2);
+    }
 
-	public void resetMessage() {
-		messageLabel.setText("");
-	}
+    public void resetMessage() {
+        messageLabel.setText("");
+    }
 
-	public void showQuitDialog() {
+    public void showQuitDialog() {
 
-		quitDialog = new Dialog("", skin) {
+        quitDialog = new Dialog("", skin) {
 
-			@Override
-			protected void result(Object object) {
-				if (object.equals(true)) {
-					this.setVisible(false);
-					quitMatch();
-				} else {
-					endPause();
-				}
-			}
-		};
+            @Override
+            protected void result(Object object) {
+                if (object.equals(true)) {
+                    this.setVisible(false);
+                    quitMatch();
+                } else {
+                    endPause();
+                }
+            }
+        };
 
-		I18NBundle messagesBundle = Options.getInstance()
-				.getCurrentMessagesBundle();
+        I18NBundle messagesBundle = Options.getInstance().getCurrentMessagesBundle();
 
-		Label quitLabel = new Label(" " + messagesBundle.get("quitGame") + " ",
-				skin);
+        Label quitLabel = new Label(" " + messagesBundle.get("quitGame") + " ", skin);
 
-		TextButton noButton = new TextButton(messagesBundle.get("cancel"), skin);
+        TextButton noButton = new TextButton(messagesBundle.get("cancel"), skin);
 
-		TextButton yesButton = new TextButton(messagesBundle.get("ok"), skin);
+        TextButton yesButton = new TextButton(messagesBundle.get("ok"), skin);
 
-		quitDialog.text(quitLabel);
-		quitDialog.button(yesButton, true);
-		quitDialog.button(noButton, false).padBottom(5);
+        quitDialog.text(quitLabel);
+        quitDialog.button(yesButton, true);
+        quitDialog.button(noButton, false).padBottom(5);
 
-		quitDialog
-				.getButtonTable()
-				.getCell(yesButton)
-				.width(yesButton.getPrefWidth()
-						+ GUIConstants.DOS_BUTTON_CORRECT_X);
-		quitDialog
-				.getButtonTable()
-				.getCell(noButton)
-				.width(noButton.getPrefWidth()
-						+ GUIConstants.DOS_BUTTON_CORRECT_X);
+        quitDialog.getButtonTable().getCell(yesButton)
+                .width(yesButton.getPrefWidth() + GUIConstants.DOS_BUTTON_CORRECT_X);
+        quitDialog.getButtonTable().getCell(noButton)
+                .width(noButton.getPrefWidth() + GUIConstants.DOS_BUTTON_CORRECT_X);
 
-		quitDialog.setVisible(true);
-		quitDialog.show(stage);
-	}
+        quitDialog.setVisible(true);
+        quitDialog.show(stage);
+    }
 
-	public void showWinDialog(String winnerName) {
+    public void showWinDialog(String winnerName) {
 
-		I18NBundle messagesBundle = Options.getInstance()
-				.getCurrentMessagesBundle();
+        I18NBundle messagesBundle = Options.getInstance().getCurrentMessagesBundle();
 
-		winDialog = new Dialog("", skin) {
+        winDialog = new Dialog("", skin) {
 
-			@Override
-			protected void result(Object object) {
-				this.setVisible(false);
-				quitMatch();
-			}
-		};
+            @Override
+            protected void result(Object object) {
+                this.setVisible(false);
+                quitMatch();
+            }
+        };
 
-		TextButton okButton = new TextButton("Ok", skin);
+        TextButton okButton = new TextButton("Ok", skin);
 
-		winDialog.button(okButton).padBottom(5);
+        winDialog.button(okButton).padBottom(5);
 
-		winDialog
-				.getButtonTable()
-				.getCell(okButton)
-				.width(okButton.getPrefWidth()
-						+ GUIConstants.DOS_BUTTON_CORRECT_X);
+        winDialog.getButtonTable().getCell(okButton)
+                .width(okButton.getPrefWidth() + GUIConstants.DOS_BUTTON_CORRECT_X);
 
-		Label winLabel = new Label(" " + winnerName + " "
-				+ messagesBundle.get("hasWon") + " ", skin);
-		winLabel.setName("winMessage");
+        Label winLabel = new Label(" " + winnerName + " " + messagesBundle.get("hasWon") + " ", skin);
+        winLabel.setName("winMessage");
 
-		winDialog.text(winLabel);
-		winDialog.setVisible(true);
-		winDialog.show(stage);
-	}
+        winDialog.text(winLabel);
+        winDialog.setVisible(true);
+        winDialog.show(stage);
+    }
 
-	public void showPlayer1Turn() {
-		player1TurnLabel.addAction(Actions.fadeIn(1f));
-	}
+    public void showPlayer1Turn() {
+        player1TurnLabel.addAction(Actions.fadeIn(1f));
+    }
 
-	public void hidePlayer1Turn() {
-		player1TurnLabel.addAction(Actions.fadeOut(1f));
-	}
+    public void hidePlayer1Turn() {
+        player1TurnLabel.addAction(Actions.fadeOut(1f));
+    }
 
-	public void showPlayer2Turn() {
-		player2TurnLabel.addAction(Actions.fadeIn(1f));
-	}
+    public void showPlayer2Turn() {
+        player2TurnLabel.addAction(Actions.fadeIn(1f));
+    }
 
-	public void hidePlayer2Turn() {
-		player2TurnLabel.addAction(Actions.fadeOut(1f));
-	}
+    public void hidePlayer2Turn() {
+        player2TurnLabel.addAction(Actions.fadeOut(1f));
+    }
 
-	public void updateTextElements() {
-		player1Widget.updateTextElements();
-		player2Widget.updateTextElements();
-	}
+    public void updateTextElements() {
+        player1Widget.updateTextElements();
+        player2Widget.updateTextElements();
+    }
 
-	public void disablePlayer1Widget() {
-		player1Widget.disable();
-	}
+    public void disablePlayer1Widget() {
+        player1Widget.disable();
+    }
 
-	public void inputParamPlayer1(int angle, int velocity) {
-		player1Widget.inputParam(angle, velocity);
-	}
+    public void inputParamPlayer1(int angle, int velocity) {
+        player1Widget.inputParam(angle, velocity);
+    }
 }

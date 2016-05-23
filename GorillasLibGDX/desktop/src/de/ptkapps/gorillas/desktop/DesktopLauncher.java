@@ -2,6 +2,8 @@ package de.ptkapps.gorillas.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+
+import de.ptkapps.gorillas.ActionResolver;
 import de.ptkapps.gorillas.main.Gorillas;
 
 public class DesktopLauncher {
@@ -46,6 +48,6 @@ public class DesktopLauncher {
 		
 //		config.height = (int) (config.height - config.height * 1 / 10f);
 		
-		new LwjglApplication(new Gorillas(), config);
+		new LwjglApplication(new Gorillas(new ActionResolverDesktop()), config);
 	}
 }

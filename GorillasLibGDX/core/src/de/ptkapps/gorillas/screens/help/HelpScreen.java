@@ -45,7 +45,7 @@ public abstract class HelpScreen extends GorillasScreen {
 				previous();
 			}
 		});
-		stage.addActor(previousButton);
+		guiStage.addActor(previousButton);
 
 		nextButton = new TextButton("", game.skin);
 		nextButton.addListener(new ChangeListener() {
@@ -54,7 +54,7 @@ public abstract class HelpScreen extends GorillasScreen {
 				next();
 			}
 		});
-		stage.addActor(nextButton);
+		guiStage.addActor(nextButton);
 
 		table = new Table(game.skin);
 		table.setBackground("menuBackground");
@@ -66,9 +66,9 @@ public abstract class HelpScreen extends GorillasScreen {
 
 		table.add(helpLabel);
 
-		stage.addActor(table);
+		guiStage.addActor(table);
 
-		gameGUI = new GameGUI(null, stage, game.skin);
+		gameGUI = new GameGUI(null, guiStage, game.skin);
 	}
 
 	@Override

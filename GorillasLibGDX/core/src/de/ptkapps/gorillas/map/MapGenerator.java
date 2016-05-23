@@ -10,66 +10,58 @@ import de.ptkapps.gorillas.main.Gorillas;
 
 public class MapGenerator {
 
-	public Map generateMap(int cityWidth, int cityHeight, int yOffsetCity) {
+    public Map generateMap(int cityWidth, int cityHeight, int yOffsetCity) {
 
-		QBasicCityGenerator cityGenerator = new QBasicCityGenerator();
+        QBasicCityGenerator cityGenerator = new QBasicCityGenerator();
 
-		City city = cityGenerator.generateCity(cityWidth, cityHeight,
-				yOffsetCity);
+        City city = cityGenerator.generateCity(cityWidth, cityHeight, yOffsetCity);
 
-		Map map = new Map(city, chooseWindSpeed());
+        Map map = new Map(city, chooseWindSpeed());
 
-		return map;
-	}
+        return map;
+    }
 
-	public Map generateMap() {
+    public Map generateMap() {
 
-		int cityWidth = (int) Gorillas.worldWidth;
-		int yOffsetCity = (int) Gorillas.worldHeight / 3;
-		int cityHeight = (int) Gorillas.worldHeight - yOffsetCity - 20;
+        int yOffsetCity = Map.Y_OFFSET_CITY;
 
-		QBasicCityGenerator cityGenerator = new QBasicCityGenerator();
+        int cityWidth = Gorillas.worldWidth;
+        int cityHeight = Math.round(Gorillas.worldHeight * 2 / 3f) - yOffsetCity;
 
-		City city = cityGenerator.generateCity(cityWidth, cityHeight,
-				yOffsetCity);
+        return generateMap(cityWidth, cityHeight, yOffsetCity);
+    }
 
-		Map map = new Map(city, chooseWindSpeed());
+    public Map generateMap(ArrayList<Vector2> buildingCoordinates, Vector2 leftGorillaCoordinate,
+            Vector2 rightGorillaCoordinate, int wind) {
 
-		return map;
-	}
+        int yOffsetCity = Map.Y_OFFSET_CITY;
 
-	public Map generateMap(ArrayList<Vector2> buildingCoordinates,
-			Vector2 leftGorillaCoordinate, Vector2 rightGorillaCoordinate,
-			int wind) {
+        int cityWidth = Gorillas.worldWidth;
+        int cityHeight = Math.round(Gorillas.worldHeight * 2 / 3f) - yOffsetCity;
 
-		int cityWidth = (int) Gorillas.worldWidth;
-		int yOffsetCity = (int) Gorillas.worldHeight / 3;
-		int cityHeight = (int) Gorillas.worldHeight - yOffsetCity - 20;
+        QBasicCityGenerator cityGenerator = new QBasicCityGenerator();
 
-		QBasicCityGenerator cityGenerator = new QBasicCityGenerator();
+        City city = cityGenerator.generateCity(cityWidth, cityHeight, yOffsetCity, buildingCoordinates,
+                leftGorillaCoordinate, rightGorillaCoordinate);
 
-		City city = cityGenerator.generateCity(cityWidth, cityHeight,
-				yOffsetCity, buildingCoordinates, leftGorillaCoordinate,
-				rightGorillaCoordinate);
+        Map map = new Map(city, wind);
 
-		Map map = new Map(city, wind);
+        return map;
+    }
 
-		return map;
-	}
+    private int chooseWindSpeed() {
 
-	private int chooseWindSpeed() {
+        Random random = new Random();
+        int wind = random.nextInt(11) - 5;
 
-		Random random = new Random();
-		int wind = random.nextInt(11) - 5;
+        if (random.nextInt(4) == 1) {
+            if (wind > 0) {
+                wind += random.nextInt(11);
+            } else {
+                wind -= random.nextInt(11);
+            }
+        }
 
-		if (random.nextInt(4) == 1) {
-			if (wind > 0) {
-				wind += random.nextInt(11);
-			} else {
-				wind -= random.nextInt(11);
-			}
-		}
-
-		return wind;
-	}
+        return wind;
+    }
 }

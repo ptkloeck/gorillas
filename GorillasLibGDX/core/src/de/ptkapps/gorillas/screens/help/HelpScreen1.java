@@ -15,90 +15,82 @@ import de.ptkapps.gorillas.world.WorldRenderer;
 
 public class HelpScreen1 extends HelpScreen {
 
-	public HelpScreen1(Gorillas game) {
-		super(game);
+    public HelpScreen1(Gorillas game) {
+        super(game);
 
-		updateTextElements();	
-	}
+        updateTextElements();
+    }
 
-	private void initCity() {
-		
-		float paneWidth = Gorillas.worldWidth;
-		float paneHeight = Gorillas.worldHeight;
+    private void initCity() {
 
-		float fifthHeight = paneHeight / 5;
-		float fifthWidth = paneWidth / 5;
-		
-		float scale = 2 / 3f;
-		
-		ArrayList<Vector2> buildingCoordinates = new ArrayList<Vector2>();
-		buildingCoordinates.add(new Vector2(2, fifthHeight));
-		buildingCoordinates.add(new Vector2(2 + fifthWidth,
-		    fifthHeight * scale));
-		buildingCoordinates.add(new Vector2(2 + fifthWidth * 2,
-		    fifthHeight * 2 / 3));
-		buildingCoordinates.add(new Vector2(2 + fifthWidth * 3,
-		    fifthHeight * scale));
-		buildingCoordinates.add(new Vector2(2 + fifthWidth * 4,
-		    fifthHeight));
+        float paneWidth = Gorillas.worldWidth;
+        float paneHeight = Gorillas.worldHeight;
 
-		Vector2 gorillaLeftCoordinate = new Vector2(2 + fifthWidth / 2
-				- Assets.gorilla.getRegionWidth() / 2, fifthHeight 
-				+ Assets.gorilla.getRegionHeight());
+        float fifthHeight = paneHeight / 5;
+        float fifthWidth = paneWidth / 5;
 
-		Vector2 gorillaRightCoordinate = new Vector2(2 + fifthWidth * 4
-				+ fifthWidth / 2 - Assets.gorilla.getRegionWidth() / 2,
-				fifthHeight+ Assets.gorilla.getRegionHeight());
+        float scale = 2 / 3f;
 
-		world.generateLevel(buildingCoordinates, gorillaLeftCoordinate,
-				gorillaRightCoordinate, 5);
-		
-		gameGUI.initGame();
-		
-		gameGUI.hidePlayer1Widget();
-	}
+        ArrayList<Vector2> buildingCoordinates = new ArrayList<Vector2>();
+        buildingCoordinates.add(new Vector2(2, fifthHeight));
+        buildingCoordinates.add(new Vector2(2 + fifthWidth, fifthHeight * scale));
+        buildingCoordinates.add(new Vector2(2 + fifthWidth * 2, fifthHeight * 2 / 3));
+        buildingCoordinates.add(new Vector2(2 + fifthWidth * 3, fifthHeight * scale));
+        buildingCoordinates.add(new Vector2(2 + fifthWidth * 4, fifthHeight));
 
-	@Override
-	protected void next() {
-		game.helpScreen2.setWorldAndWorldRenderer(world, worldRenderer);
-		game.setScreen(game.helpScreen2);
-	}
+        Vector2 gorillaLeftCoordinate = new Vector2(2 + fifthWidth / 2 - Assets.gorilla.getRegionWidth() / 2,
+                fifthHeight + Assets.gorilla.getRegionHeight());
 
-	@Override
-	protected void previous() {
-		game.setScreen(game.mainMenuScreen);
-	}
+        Vector2 gorillaRightCoordinate = new Vector2(2 + fifthWidth * 4 + fifthWidth / 2
+                - Assets.gorilla.getRegionWidth() / 2, fifthHeight + Assets.gorilla.getRegionHeight());
 
-	@Override
-	public void updateTextElements() {
+        world.generateLevel(buildingCoordinates, gorillaLeftCoordinate, gorillaRightCoordinate, 5);
 
-		I18NBundle messagesBundle = Options.getInstance()
-				.getCurrentMessagesBundle();
+        gameGUI.initGame();
 
-		helpLabel.setText(messagesBundle.get("help1"));
+        gameGUI.hidePlayer1Widget();
+    }
 
-		super.updateTextElements();
-	}
-	
-	@Override
-	public void show() {
-		
-		super.show();
-	
-		if (world == null) {
-			world = new World();
-			worldRenderer = new WorldRenderer(game.batch, world);
-			initCity();
-		}	
-	}
-	
-	@Override
-	public void render(float delta) {
+    @Override
+    protected void next() {
+        game.helpScreen2.setWorldAndWorldRenderer(world, worldRenderer);
+        game.setScreen(game.helpScreen2);
+    }
 
-		Gdx.gl.glClearColor(0, 0, (10 * 16 + 8 * 1) / 255f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    @Override
+    protected void previous() {
+        game.setScreen(game.mainMenuScreen);
+    }
 
-		worldRenderer.render();
-		super.render(delta);
-	}
+    @Override
+    public void updateTextElements() {
+
+        I18NBundle messagesBundle = Options.getInstance().getCurrentMessagesBundle();
+
+        helpLabel.setText(messagesBundle.get("help1"));
+
+        super.updateTextElements();
+    }
+
+    @Override
+    public void show() {
+
+        super.show();
+
+        if (world == null) {
+            world = new World(game.guiWidth, game.guiHeight);
+            worldRenderer = new WorldRenderer(game.batch, world);
+            initCity();
+        }
+    }
+
+    @Override
+    public void render(float delta) {
+
+        Gdx.gl.glClearColor(0, 0, (10 * 16 + 8 * 1) / 255f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        worldRenderer.render();
+        super.render(delta);
+    }
 }

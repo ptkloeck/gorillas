@@ -23,269 +23,268 @@ import de.ptkapps.gorillas.screens.gui.GUIConstants;
 
 public class World {
 
-	public Shot currentShot;
+    public Shot currentShot;
 
-	public Gorilla gorilla1;
-	public Gorilla gorilla2;
+    public Gorilla gorilla1;
+    public Gorilla gorilla2;
 
-	public City city;
+    public City city;
 
-	public Sun sun;
+    public Sun sun;
 
-	public Map currentMap;
+    public Map currentMap;
 
-	public int scorePlayer1;
-	public int scorePlayer2;
+    public int scorePlayer1;
+    public int scorePlayer2;
 
-	public String namePlayer1;
-	public String namePlayer2;
+    public String namePlayer1;
+    public String namePlayer2;
 
-	public Parameterization paramPlayer1;
-	public Parameterization paramPlayer2;
+    public Parameterization paramPlayer1;
+    public Parameterization paramPlayer2;
 
-	public World() {
-		paramPlayer1 = new Parameterization(Direction.LEFT_TO_RIGHT);
-		paramPlayer2 = new Parameterization(Direction.RIGHT_TO_LEFT);
-	}
+    private int guiWidth;
+    private int guiHeight;
 
-	public void initGame() {
+    /**
+     * 
+     * @param guiWidth
+     *            The virtual gui width, which is needed to place the sun.
+     * @param guiHeight
+     *            The virtual gui height, which is needed to place the sun.
+     * 
+     */
+    public World(int guiWidth, int guiHeight) {
 
-		scorePlayer1 = 0;
-		scorePlayer2 = 0;
-		generateLevel();
-	}
+        this.guiWidth = guiWidth;
+        this.guiHeight = guiHeight;
 
-	public void generateLevel(ArrayList<Vector2> buildingCoordinates,
-			Vector2 leftGorillaCoordinate, Vector2 rightGorillaCoordinate,
-			int wind) {
+        paramPlayer1 = new Parameterization(Direction.LEFT_TO_RIGHT);
+        paramPlayer2 = new Parameterization(Direction.RIGHT_TO_LEFT);
+    }
 
-		MapGenerator mapGenerator = new MapGenerator();
-		currentMap = mapGenerator.generateMap(buildingCoordinates,
-				leftGorillaCoordinate, rightGorillaCoordinate, wind);
+    public void initGame() {
 
-		setupLevel();
-	}
+        scorePlayer1 = 0;
+        scorePlayer2 = 0;
+        generateLevel();
+    }
 
-	public void generateLevel() {
+    public void generateLevel(ArrayList<Vector2> buildingCoordinates, Vector2 leftGorillaCoordinate,
+            Vector2 rightGorillaCoordinate, int wind) {
 
-		// float paneWidth = Gorillas.worldWidth;
-		// float paneHeight = Gorillas.worldHeight;
-		//
-		// int yOffsetCity = (int) Gorillas.worldHeight / 3;
-		// int cityHeight = (int) Gorillas.worldHeight - yOffsetCity - 20;
-		//
-		// cityHeight = 1;
-		//
-		// ArrayList<Vector2> buildingCoordinates = new ArrayList<Vector2>();
-		// buildingCoordinates.add(new Vector2(2, cityHeight));
-		//
-		// Vector2 gorillaLeftCoordinate = new Vector2(2 + paneWidth / 5 / 2
-		// - Assets.gorilla.getRegionWidth() / 2, cityHeight
-		// + Assets.gorilla.getRegionHeight());
-		//
-		// Vector2 gorillaRightCoordinate = new Vector2(2 + paneWidth / 5 * 4
-		// + paneWidth / 5 / 2 - Assets.gorilla.getRegionWidth() / 2,
-		// cityHeight + Assets.gorilla.getRegionHeight());
+        MapGenerator mapGenerator = new MapGenerator();
+        currentMap = mapGenerator.generateMap(buildingCoordinates, leftGorillaCoordinate,
+                rightGorillaCoordinate, wind);
 
-		MapGenerator mapGenerator = new MapGenerator();
-		currentMap = mapGenerator.generateMap();
+        setupLevel();
+    }
 
-		// currentMap = mapGenerator.generateMap(buildingCoordinates,
-		// gorillaLeftCoordinate,
-		// gorillaRightCoordinate, 0);
+    public void generateLevel() {
 
-		setupLevel();
-	}
+        // float paneWidth = Gorillas.worldWidth;
+        // float paneHeight = Gorillas.worldHeight;
+        //
+        // int yOffsetCity = (int) Gorillas.worldHeight / 3;
+        // int cityHeight = (int) Gorillas.worldHeight - yOffsetCity - 20;
+        //
+        // cityHeight = 1;
+        //
+        // ArrayList<Vector2> buildingCoordinates = new ArrayList<Vector2>();
+        // buildingCoordinates.add(new Vector2(2, cityHeight));
+        //
+        // Vector2 gorillaLeftCoordinate = new Vector2(2 + paneWidth / 5 / 2
+        // - Assets.gorilla.getRegionWidth() / 2, cityHeight
+        // + Assets.gorilla.getRegionHeight());
+        //
+        // Vector2 gorillaRightCoordinate = new Vector2(2 + paneWidth / 5 * 4
+        // + paneWidth / 5 / 2 - Assets.gorilla.getRegionWidth() / 2,
+        // cityHeight + Assets.gorilla.getRegionHeight());
 
-	private void setupLevel() {
+        MapGenerator mapGenerator = new MapGenerator();
+        currentMap = mapGenerator.generateMap();
 
-		paramPlayer1.reset();
-		paramPlayer2.reset();
+        // currentMap = mapGenerator.generateMap(buildingCoordinates,
+        // gorillaLeftCoordinate,
+        // gorillaRightCoordinate, 0);
 
-		if (city != null) {
-			// the pixmap of the old city - if there was one - has to be
-			// disposed
-			city.dispose();
-		}
+        setupLevel();
+    }
 
-		city = currentMap.getCity();
+    private void setupLevel() {
 
-		Vector2 cityLeftGorillaPos = city.getLeftGorillaCoordinate();
-		float gorillaLeftPosY = city.getPosition().y
-				+ (city.getHeight() - cityLeftGorillaPos.y);
-		Vector2 gorillaLeftPosition = new Vector2(cityLeftGorillaPos.x,
-				gorillaLeftPosY);
-		gorilla1 = GorillaFactory.createGorilla(gorillaLeftPosition,
-				Direction.LEFT_TO_RIGHT);
+        paramPlayer1.reset();
+        paramPlayer2.reset();
 
-		Vector2 cityRightGorillaPos = city.getRightGorillaCoordinate();
-		float gorillaRightPosY = city.getPosition().y
-				+ (city.getHeight() - cityRightGorillaPos.y);
-		Vector2 gorillaRightPosition = new Vector2(cityRightGorillaPos.x,
-				gorillaRightPosY);
-		gorilla2 = GorillaFactory.createGorilla(gorillaRightPosition,
-				Direction.RIGHT_TO_LEFT);
+        if (city != null) {
+            // the pixmap of the old city - if there was one - has to be
+            // disposed
+            city.dispose();
+        }
 
-		gorilla1.numShotsFired = 0;
-		gorilla2.numShotsFired = 0;
+        city = currentMap.getCity();
 
-		sun = SunFactory.createSun(Gorillas.worldWidth / 2
-				- Assets.sunAstonished.getRegionWidth() / 2,
-				Gorillas.normalLabelHeight + GUIConstants.NAME_OFFSET_Y * 2);
-	}
+        Vector2 cityLeftGorillaPos = city.getLeftGorillaCoordinate();
+        float gorillaLeftPosY = city.getPosition().y + cityLeftGorillaPos.y;
+        Vector2 gorillaLeftPosition = new Vector2(cityLeftGorillaPos.x, gorillaLeftPosY);
+        gorilla1 = GorillaFactory.createGorilla(gorillaLeftPosition, Direction.LEFT_TO_RIGHT);
 
-	public void generateShot(Gorilla shooter, int angle, int velocity) {
+        Vector2 cityRightGorillaPos = city.getRightGorillaCoordinate();
+        float gorillaRightPosY = city.getPosition().y + cityRightGorillaPos.y;
+        Vector2 gorillaRightPosition = new Vector2(cityRightGorillaPos.x, gorillaRightPosY);
+        gorilla2 = GorillaFactory.createGorilla(gorillaRightPosition, Direction.RIGHT_TO_LEFT);
 
-		Vector2 shotStartPosition = shooter.getShotStartPosition();
-		Direction shotDirection = shooter.getDirection();
-		shooter.startThrow();
-		shooter.numShotsFired++;
+        gorilla1.numShotsFired = 0;
+        gorilla2.numShotsFired = 0;
 
-		currentShot = ShotFactory.createShot(shotStartPosition, shotDirection,
-				angle, velocity, currentMap.getWind());
-	}
+        sun = SunFactory.createSun(guiWidth / 2 - Assets.sunAstonished.getRegionWidth() / 2, guiHeight
+                - Gorillas.normalLabelHeight - GUIConstants.NAME_OFFSET_Y * 2);
+    }
 
-	public void update(float delta) {
+    public void generateShot(Gorilla shooter, int angle, int velocity) {
 
-		if (currentShot != null) {
-			currentShot.update(delta);
-		}
-		gorilla1.update(delta);
-		gorilla2.update(delta);
-		city.update(delta);
-		sun.update(delta);
-		paramPlayer1.update(delta);
-		paramPlayer2.update(delta);
-	}
+        Vector2 shotStartPosition = shooter.getShotStartPosition();
+        Direction shotDirection = shooter.getDirection();
+        shooter.startThrow();
+        shooter.numShotsFired++;
 
-	public boolean checkCityCollision() {
+        currentShot = ShotFactory.createShot(shotStartPosition, shotDirection, angle, velocity,
+                currentMap.getWind());
+    }
 
-		if (checkBoundingBoxShotCollision(city)) {
+    public void update(float delta) {
 
-			city.impactAt(currentShot.getPosition());
+        if (currentShot != null) {
+            currentShot.update(delta);
+        }
+        gorilla1.update(delta);
+        gorilla2.update(delta);
+        city.update(delta);
+        sun.update(delta);
+        paramPlayer1.update(delta);
+        paramPlayer2.update(delta);
+    }
 
-			return true;
-		} else {
-			return false;
-		}
-	}
+    public boolean checkCityCollision() {
 
-	public boolean checkGorillaHit(Gorilla gorilla) {
+        if (checkBoundingBoxShotCollision(city)) {
 
-		if (checkBoundingBoxShotCollision(gorilla)) {
+            city.impactAt(currentShot.getPosition());
 
-			gorilla.state = Gorilla.GORILLA_STATE_DESTRUCTED;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-			city.switchDestructionPatternTo(City.gorillaDestrPatternID);
-			float cityImpactPositionX = gorilla.getPosition().x
-					+ gorilla.getSize().x / 2;
-			float cityImpactPositionY = gorilla.getPosition().y
-					+ gorilla.getSize().y / 2;
-			city.impactAt(new Vector2(cityImpactPositionX, cityImpactPositionY));
-			city.switchDestructionPatternTo(City.bananaDestrPatternID);
+    public boolean checkGorillaHit(Gorilla gorilla) {
 
-			if (gorilla.equals(gorilla1)) {
-				gorilla2.cheer();
-			} else {
-				gorilla1.cheer();
-			}
+        if (checkBoundingBoxShotCollision(gorilla)) {
 
-			currentShot = null;
-			return true;
-		}
-		return false;
-	}
+            gorilla.state = Gorilla.GORILLA_STATE_DESTRUCTED;
 
-	private boolean checkBoundingBoxShotCollision(
-			ImageDestructibleGameObject gameObject) {
+            city.switchDestructionPatternTo(City.gorillaDestrPatternID);
+            float cityImpactPositionX = gorilla.getPosition().x + gorilla.getSize().x / 2;
+            float cityImpactPositionY = gorilla.getPosition().y + gorilla.getSize().y / 2;
+            city.impactAt(new Vector2(cityImpactPositionX, cityImpactPositionY));
+            city.switchDestructionPatternTo(City.bananaDestrPatternID);
 
-		Vector2 shotPosition = currentShot.getPosition();
+            if (gorilla.equals(gorilla1)) {
+                gorilla2.cheer();
+            } else {
+                gorilla1.cheer();
+            }
 
-		int bananaWidth = Assets.banana.getRegionWidth();
-		int bananaHeight = Assets.banana.getRegionHeight();
+            currentShot = null;
+            return true;
+        }
+        return false;
+    }
 
-		// do a bounding box test
-		boolean collides = gameObject.collides(shotPosition.x, shotPosition.y);
-		collides |= gameObject.collides(shotPosition.x + bananaWidth,
-				shotPosition.y);
-		collides |= gameObject.collides(shotPosition.x, shotPosition.y
-				+ bananaHeight);
-		collides |= gameObject.collides(shotPosition.x + bananaWidth,
-				shotPosition.y + bananaHeight);
+    private boolean checkBoundingBoxShotCollision(ImageDestructibleGameObject gameObject) {
 
-		return collides;
-	}
+        Vector2 shotPosition = currentShot.getPosition();
 
-	public boolean checkLeaveScreen() {
+        int bananaWidth = Assets.banana.getRegionWidth();
+        int bananaHeight = Assets.banana.getRegionHeight();
 
-		Vector2 shotPosition = currentShot.getPosition();
-		if (((shotPosition.x < -currentShot.getWidth() | shotPosition.x > Gorillas.worldWidth) & !currentShot
-				.isLandInScreen()) | shotPosition.y > Gorillas.worldHeight) {
-			return true;
-		}
-		return false;
-	}
+        // do a bounding box test
+        boolean collides = gameObject.collides(shotPosition.x, shotPosition.y);
+        collides |= gameObject.collides(shotPosition.x + bananaWidth, shotPosition.y);
+        collides |= gameObject.collides(shotPosition.x, shotPosition.y + bananaHeight);
+        collides |= gameObject.collides(shotPosition.x + bananaWidth, shotPosition.y + bananaHeight);
 
-	public boolean checkCheeringCompleted(Gorilla gorilla) {
+        return collides;
+    }
 
-		if (Assets.cheeringGorilla.isAnimationFinished(gorilla.stateTime)) {
-			gorilla.state = Gorilla.GORILLA_STATE_NORMAL;
-			return true;
-		} else
-			return false;
-	}
+    public boolean checkLeaveScreen() {
 
-	public boolean checkThrowingCompleted(int whoseTurn) {
+        Vector2 shotPosition = currentShot.getPosition();
+        if (((shotPosition.x < -currentShot.getWidth() | shotPosition.x > Gorillas.worldWidth) & !currentShot
+                .isLandInScreen()) | shotPosition.y > Gorillas.worldHeight) {
+            return true;
+        }
+        return false;
+    }
 
-		Gorilla gorilla = whoseTurn == GameScreen.TURN_PLAYER_1 ? gorilla1
-				: gorilla2;
+    public boolean checkCheeringCompleted(Gorilla gorilla) {
 
-		if (Assets.leftThrowingGorilla.isAnimationFinished(gorilla.stateTime)) {
-			gorilla.state = Gorilla.GORILLA_STATE_NORMAL;
-			return true;
-		} else {
-			return false;
-		}
-	}
+        if (Assets.cheeringGorilla.isAnimationFinished(gorilla.stateTime)) {
+            gorilla.state = Gorilla.GORILLA_STATE_NORMAL;
+            return true;
+        } else
+            return false;
+    }
 
-	public boolean cityDestructionCompleted() {
+    public boolean checkThrowingCompleted(int whoseTurn) {
 
-		if (Assets.cityDestruction.isAnimationFinished(city.stateTime)) {
-			city.state = City.CITY_STATE_NORMAL;
-			return true;
-		} else {
-			return false;
-		}
-	}
+        Gorilla gorilla = whoseTurn == GameScreen.TURN_PLAYER_1 ? gorilla1 : gorilla2;
 
-	public void checkSunHit() {
+        if (Assets.leftThrowingGorilla.isAnimationFinished(gorilla.stateTime)) {
+            gorilla.state = Gorilla.GORILLA_STATE_NORMAL;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-		Vector2 shotPosition = currentShot.getPosition();
-		float shotX = shotPosition.x;
-		float shotY = shotPosition.y;
+    public boolean cityDestructionCompleted() {
 
-		Vector2 sunPosition = sun.getPosition();
-		float sunX = sunPosition.x;
-		float sunY = sunPosition.y;
-		Vector2 sunSize = sun.getSize();
-		float sunWidth = sunSize.x;
-		float sunHeight = sunSize.y;
+        if (Assets.cityDestruction.isAnimationFinished(city.stateTime)) {
+            city.state = City.CITY_STATE_NORMAL;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-		if (shotX >= sunX && shotX <= sunX + sunWidth && shotY >= sunY
-				&& shotY <= sunY + sunHeight) {
-			sun.beAstonished();
-		}
-	}
+    public void checkSunHit() {
 
-	public void dispose() {
-		if (!(city == null)) {
-			city.dispose();
-		}
-	}
+        Vector2 shotPosition = currentShot.getPosition();
+        float shotX = shotPosition.x;
+        float shotY = shotPosition.y;
 
-	public void resume() {
-		gorilla1.reload();
-		gorilla2.reload();
-		city.reload();
-	}
+        Vector2 sunPosition = sun.getPosition();
+        float sunX = sunPosition.x;
+        float sunY = sunPosition.y;
+        Vector2 sunSize = sun.getSize();
+        float sunWidth = sunSize.x;
+        float sunHeight = sunSize.y;
+
+        if (shotX >= sunX && shotX <= sunX + sunWidth && shotY >= sunY && shotY <= sunY + sunHeight) {
+            sun.beAstonished();
+        }
+    }
+
+    public void dispose() {
+        if (!(city == null)) {
+            city.dispose();
+        }
+    }
+
+    public void resume() {
+        gorilla1.reload();
+        gorilla2.reload();
+        city.reload();
+    }
 }

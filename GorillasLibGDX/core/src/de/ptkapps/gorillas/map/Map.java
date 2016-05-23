@@ -4,6 +4,8 @@ import de.ptkapps.gorillas.gameobjects.City;
 
 public class Map {
 
+    public static int Y_OFFSET_CITY = 20;
+    
 	private int wind;
 	
 	private City city;
